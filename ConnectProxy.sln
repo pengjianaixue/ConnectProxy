@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.1209
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectProxy", "ConnectProxy\ConnectProxy.csproj", "{FE09B95E-1DFD-4CD5-A3FF-E6B41FA5D656}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlChannel", "ControlChannel\ControlChannel.csproj", "{615D0B32-E4BB-495F-A4ED-DE9A2CB43CC7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{FE09B95E-1DFD-4CD5-A3FF-E6B41FA5D656}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE09B95E-1DFD-4CD5-A3FF-E6B41FA5D656}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE09B95E-1DFD-4CD5-A3FF-E6B41FA5D656}.Release|Any CPU.Build.0 = Release|Any CPU
+		{615D0B32-E4BB-495F-A4ED-DE9A2CB43CC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{615D0B32-E4BB-495F-A4ED-DE9A2CB43CC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{615D0B32-E4BB-495F-A4ED-DE9A2CB43CC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{615D0B32-E4BB-495F-A4ED-DE9A2CB43CC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
