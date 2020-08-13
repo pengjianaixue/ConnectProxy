@@ -21,10 +21,12 @@ namespace ConnectProxy
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             TelnetServer telnetServer = new TelnetServer();
-            telnetServer.registerAction("Base", telnetHelloFunction);
-            telnetServer.registerAction("RuCommand", RuCommandMode);
-            telnetServer.registerMode("RuCommand");
-            telnetServer.startServer("12345");
+            //telnetServer.registerAction("Base", telnetHelloFunction);
+            ////telnetServer.registerAction("RuCommand", RuCommandMode);
+            ////telnetServer.registerMode("RuCommand");
+            //telnetServer.registerRequsetAction(RuCommandMode);
+            //telnetServer.startServer("12345");
+            TelnetFSM telnetFSM = new TelnetFSM();
             Application.Run(new ConnctConfig());
         }
         public static ComPortControl.RuSerialPort ruSerialPort = null;
@@ -34,11 +36,13 @@ namespace ConnectProxy
             {
                 if (requestInfo.GetFirstParam().Length == 0)
                 {
-                    session.Send("Use RuCommand <Comport Number>");
+                    session.Send("Use RuCommand <serialport name[COM3]>");
+                    return;
                 }
-                ruSerialPort = new ComPortControl.RuSerialPort();
+                ruSerialPort = new RuSerialPort();
                 if (!ruSerialPort.openComport(requestInfo.GetFirstParam()))
                 {
+                    ruSerialPort = null;
                     session.Send("open serial port fail,please check serial port number");
                 }
             }
@@ -46,7 +50,6 @@ namespace ConnectProxy
             {
                 session.sendNoNewLine(ruSerialPort.sendAndRecvi(requestInfo.Body));
             }
-           
         }
         public static void telnetHelloFunction(TelnetAppSession session, StringRequestInfo requestInfo)
         {

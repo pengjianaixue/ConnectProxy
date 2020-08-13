@@ -20,17 +20,18 @@ namespace ConnectProxy.ComPortControl
         }
         public bool openComport(string ComportName)
         {
-
             if (comPortLists.Contains(ruSerialPort.PortName))
             {
                 try
                 {
                     ruSerialPort.PortName = ComportName;
                     ruSerialPort.Open();
+                    isOpen = true;
                     return true;
                 }
                 catch (System.Exception ex)
                 {
+                    isOpen = false;
                     return false;
                 }
             }
@@ -83,6 +84,21 @@ namespace ConnectProxy.ComPortControl
             }
             
         }
+        public bool close()
+        {
+            try
+            {
+                ruSerialPort.Close();
+                isOpen = false;
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                return false;
+            }
+            
+        }
+        public bool isOpen { get; private set; } = false;
         private string[] comPortLists = null;
         private SerialPort ruSerialPort = new SerialPort();
     }

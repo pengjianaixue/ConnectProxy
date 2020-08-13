@@ -873,7 +873,7 @@ namespace ConnectProxy.TCALoader
         private ApplicationControl tas;
         private TslControlClient tsl;
         private static Dictionary<string, ulong> cpriPortMapping = new Dictionary<string, ulong>();
-        private FileAppender logRecorder;
+        private readonly FileAppender logRecorder;
         
     }
 }
