@@ -28,76 +28,126 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConnctConfig));
             this.panel1 = new System.Windows.Forms.Panel();
-            this.serialPort = new System.IO.Ports.SerialPort(this.components);
+            this.groupBox_configration = new System.Windows.Forms.GroupBox();
+            this.comboBox_ComportList = new System.Windows.Forms.ComboBox();
+            this.button_tcaFolderBrowser = new System.Windows.Forms.Button();
             this.TCAPath = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox_TCATSLPath = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.tcaFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.openFileDialog_TCA = new System.Windows.Forms.OpenFileDialog();
+            this.button_RefreshComportList = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
+            this.groupBox_configration.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.textBox2);
-            this.panel1.Controls.Add(this.textBox1);
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.TCAPath);
-            this.panel1.Location = new System.Drawing.Point(2, 3);
+            this.panel1.Controls.Add(this.groupBox_configration);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(493, 497);
+            this.panel1.Size = new System.Drawing.Size(530, 548);
             this.panel1.TabIndex = 0;
+            // 
+            // groupBox_configration
+            // 
+            this.groupBox_configration.Controls.Add(this.button_RefreshComportList);
+            this.groupBox_configration.Controls.Add(this.comboBox_ComportList);
+            this.groupBox_configration.Controls.Add(this.button_tcaFolderBrowser);
+            this.groupBox_configration.Controls.Add(this.TCAPath);
+            this.groupBox_configration.Controls.Add(this.textBox_TCATSLPath);
+            this.groupBox_configration.Controls.Add(this.label1);
+            this.groupBox_configration.Location = new System.Drawing.Point(12, 12);
+            this.groupBox_configration.Name = "groupBox_configration";
+            this.groupBox_configration.Size = new System.Drawing.Size(506, 524);
+            this.groupBox_configration.TabIndex = 2;
+            this.groupBox_configration.TabStop = false;
+            this.groupBox_configration.Text = "Configration";
+            // 
+            // comboBox_ComportList
+            // 
+            this.comboBox_ComportList.FormattingEnabled = true;
+            this.comboBox_ComportList.Location = new System.Drawing.Point(117, 67);
+            this.comboBox_ComportList.Name = "comboBox_ComportList";
+            this.comboBox_ComportList.Size = new System.Drawing.Size(287, 21);
+            this.comboBox_ComportList.TabIndex = 3;
+            // 
+            // button_tcaFolderBrowser
+            // 
+            this.button_tcaFolderBrowser.Image = global::ConnectProxy.Properties.Resources.Open_Folder;
+            this.button_tcaFolderBrowser.Location = new System.Drawing.Point(410, 23);
+            this.button_tcaFolderBrowser.Name = "button_tcaFolderBrowser";
+            this.button_tcaFolderBrowser.Size = new System.Drawing.Size(79, 23);
+            this.button_tcaFolderBrowser.TabIndex = 2;
+            this.button_tcaFolderBrowser.Text = "Browser";
+            this.button_tcaFolderBrowser.UseVisualStyleBackColor = true;
+            this.button_tcaFolderBrowser.Click += new System.EventHandler(this.button_tcaFolderBrowser_Click);
             // 
             // TCAPath
             // 
             this.TCAPath.AutoSize = true;
-            this.TCAPath.Location = new System.Drawing.Point(54, 63);
+            this.TCAPath.Location = new System.Drawing.Point(12, 28);
             this.TCAPath.Name = "TCAPath";
-            this.TCAPath.Size = new System.Drawing.Size(76, 13);
+            this.TCAPath.Size = new System.Drawing.Size(99, 13);
             this.TCAPath.TabIndex = 0;
-            this.TCAPath.Text = "TCA TSL Path";
-            this.TCAPath.Click += new System.EventHandler(this.label1_Click);
+            this.TCAPath.Text = "TCA Path(TSL.exe)";
             // 
-            // textBox1
+            // textBox_TCATSLPath
             // 
-            this.textBox1.Location = new System.Drawing.Point(136, 60);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 1;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.textBox_TCATSLPath.Location = new System.Drawing.Point(117, 26);
+            this.textBox_TCATSLPath.Name = "textBox_TCATSLPath";
+            this.textBox_TCATSLPath.Size = new System.Drawing.Size(287, 20);
+            this.textBox_TCATSLPath.TabIndex = 1;
+            this.textBox_TCATSLPath.TextChanged += new System.EventHandler(this.textBox_TCATSLPath_TextChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(54, 95);
+            this.label1.Location = new System.Drawing.Point(19, 70);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(76, 13);
+            this.label1.Size = new System.Drawing.Size(92, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "TCA TSL Path";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            this.label1.Text = "Defalut Serial Port";
             // 
-            // textBox2
+            // tcaFolderBrowserDialog
             // 
-            this.textBox2.Location = new System.Drawing.Point(136, 95);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 1;
-            this.textBox2.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.tcaFolderBrowserDialog.ShowNewFolderButton = false;
+            // 
+            // openFileDialog_TCA
+            // 
+            this.openFileDialog_TCA.FileName = "TSL.exe";
+            // 
+            // button_RefreshComportList
+            // 
+            this.button_RefreshComportList.Image = global::ConnectProxy.Properties.Resources.Open_Folder;
+            this.button_RefreshComportList.Location = new System.Drawing.Point(410, 65);
+            this.button_RefreshComportList.Name = "button_RefreshComportList";
+            this.button_RefreshComportList.Size = new System.Drawing.Size(79, 23);
+            this.button_RefreshComportList.TabIndex = 4;
+            this.button_RefreshComportList.Text = "Refresh";
+            this.button_RefreshComportList.UseVisualStyleBackColor = true;
+            this.button_RefreshComportList.Click += new System.EventHandler(this.button_RefreshComportList_Click);
             // 
             // ConnctConfig
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(496, 512);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoScroll = true;
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(530, 548);
             this.Controls.Add(this.panel1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ConnctConfig";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ConnctConfig";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ConnctConfig_FormClosed);
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.groupBox_configration.ResumeLayout(false);
+            this.groupBox_configration.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -105,11 +155,15 @@
         #endregion
 
         private System.Windows.Forms.Panel panel1;
-        private System.IO.Ports.SerialPort serialPort;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBox_TCATSLPath;
         private System.Windows.Forms.Label TCAPath;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.GroupBox groupBox_configration;
+        private System.Windows.Forms.FolderBrowserDialog tcaFolderBrowserDialog;
+        private System.Windows.Forms.ComboBox comboBox_ComportList;
+        private System.Windows.Forms.Button button_tcaFolderBrowser;
+        private System.Windows.Forms.OpenFileDialog openFileDialog_TCA;
+        private System.Windows.Forms.Button button_RefreshComportList;
     }
 }
 

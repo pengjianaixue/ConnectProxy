@@ -8,28 +8,27 @@ using SuperSocket.SocketService;
 
 namespace ConnectProxy.TelnetServerSim
 {
-    //using ModeDic = Dictionary<string, Dictionary<string, RequstAction>>;
-    //using ActionDic = Dictionary<string, RequstAction>;
+    
+
     using ModeDic = Dictionary<string, Dictionary<string, Action<TelnetAppSession, StringRequestInfo>>>;
     using ActionDic = Dictionary<string, Action<TelnetAppSession, StringRequestInfo>>;
     class TelnetAppSession : AppSession<TelnetAppSession>
     {
 
-        //
-        //     Sends the specified message.
-        //
-        //   message:
-        //     The message.
-
-        public string PropmtSymbol { get; set; } = "$";
+        public string PropmtSymbol { get; set; } = "$ ";
         public override void Send(string message)
         {
-            base.Send(message);
+            base.SocketSession.Client.SendData(System.Text.Encoding.Default.GetBytes(message + System.Environment.NewLine));
         }
         public void sendPropmt()
         {
             base.SocketSession.Client.SendData(System.Text.Encoding.Default.GetBytes(PropmtSymbol));
 
+        }
+        public void sendWithAppendPropmt(string message)
+        {
+            this.Send(message);
+            this.sendPropmt();
         }
         public void sendNoNewLine(string message)
         {
@@ -66,7 +65,6 @@ namespace ConnectProxy.TelnetServerSim
             baseActionDic.Add("", sendPromt);
             baseActionDic.Add("help", printHelp);
             baseActionDic.Add("Exit", sessionClose);
-
         }
         public bool startServer(string port)
         {
@@ -137,7 +135,7 @@ namespace ConnectProxy.TelnetServerSim
         #region BaseCommand
         private void sendPromt(TelnetAppSession session, StringRequestInfo requestInfo)
         {
-            session.sendNoNewLine("$ ");
+            session.sendPropmt();
         }
         private void printHelp(TelnetAppSession session, StringRequestInfo requestInfo)
         {
@@ -148,7 +146,7 @@ namespace ConnectProxy.TelnetServerSim
                     session.Send(item.Key);
                 }
             }
-            session.sendNoNewLine("$");
+            session.sendPropmt();
         }
         private void sessionClose(TelnetAppSession session, StringRequestInfo requestInfo)
         {

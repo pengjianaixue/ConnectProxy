@@ -18,9 +18,13 @@ namespace ConnectProxy.ComPortControl
             comPortLists = SerialPort.GetPortNames();
            
         }
-        public bool openComport(string ComportName)
+        public static string[] getSerialPortList()
         {
-            if (comPortLists.Contains(ruSerialPort.PortName))
+            return SerialPort.GetPortNames();
+        }
+        public bool openComport(string ComportName ,RunTimeError runTimeError)
+        {
+            if (comPortLists.Contains(ComportName))
             {
                 try
                 {
@@ -31,13 +35,14 @@ namespace ConnectProxy.ComPortControl
                 }
                 catch (System.Exception ex)
                 {
+                    runTimeError.Errordescription = ex.Message;
                     isOpen = false;
                     return false;
                 }
             }
+            runTimeError.Errordescription = "can not find the special serial port on this envirment";
+            isOpen = false;
             return false;
-
-
         }
         public string sendAndRecvi(string cmd, string untilString = "")
         {
@@ -50,7 +55,6 @@ namespace ConnectProxy.ComPortControl
             {
                 return ex.ToString();
             }
-            
         }
         public bool send(string cmd)
         {

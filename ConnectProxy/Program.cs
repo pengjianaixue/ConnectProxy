@@ -12,6 +12,16 @@ namespace ConnectProxy
 {
     static class Program
     {
+        public static void startServer()
+        {
+            TelnetFSM telnetFSM = new TelnetFSM();
+        }
+        //async Task asyncStartServer()
+        //{
+        //    var startTask = new Task(startServer);
+        //    startTask.Start();
+        //    await startTask;
+        //}
         /// <summary>
         /// 应用程序的主入口点。
         /// </summary>
@@ -19,16 +29,11 @@ namespace ConnectProxy
         static void Main()
         {
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            TelnetServer telnetServer = new TelnetServer();
-            //telnetServer.registerAction("Base", telnetHelloFunction);
-            ////telnetServer.registerAction("RuCommand", RuCommandMode);
-            ////telnetServer.registerMode("RuCommand");
-            //telnetServer.registerRequsetAction(RuCommandMode);
-            //telnetServer.startServer("12345");
-            TelnetFSM telnetFSM = new TelnetFSM();
+            Application.SetCompatibleTextRenderingDefault(false);            
             Application.Run(new ConnctConfig());
         }
+
+        #region Test
         public static ComPortControl.RuSerialPort ruSerialPort = null;
         public static void RuCommandMode(TelnetAppSession session, StringRequestInfo requestInfo)
         {
@@ -40,10 +45,11 @@ namespace ConnectProxy
                     return;
                 }
                 ruSerialPort = new RuSerialPort();
-                if (!ruSerialPort.openComport(requestInfo.GetFirstParam()))
+                RunTimeError runTimeError = new RunTimeError();
+                if (!ruSerialPort.openComport(requestInfo.GetFirstParam(), runTimeError))
                 {
                     ruSerialPort = null;
-                    session.Send("open serial port fail,please check serial port number");
+                    session.Send("open serial port fail: "+runTimeError.Errordescription);
                 }
             }
             else
@@ -81,5 +87,6 @@ namespace ConnectProxy
                     break;
             }
         }
+#endregion
     }
 }

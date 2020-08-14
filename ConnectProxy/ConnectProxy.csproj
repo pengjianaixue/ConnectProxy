@@ -181,9 +181,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComPortControl\SerialPort.cs" />
+    <Compile Include="FSM\FSMAction\ConnectedAction.cs" />
+    <Compile Include="FSM\FSMAction\interface\IFSMAction.cs" />
+    <Compile Include="FSM\FSMAction\RuModeAction.cs" />
+    <Compile Include="FSM\FSMData.cs" />
+    <Compile Include="SerialPort\SerialPort.cs" />
     <Compile Include="FileTransfer.cs" />
-    <Compile Include="FSM\FSM.cs" />
+    <Compile Include="FSM\MainFSM.cs" />
     <Compile Include="RunTimeError.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -206,6 +210,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Config\log4net.config" />
     <None Include="Config\log4net.unix.config" />
@@ -227,6 +232,9 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Open Folder.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

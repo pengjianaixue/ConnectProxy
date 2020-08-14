@@ -9,39 +9,64 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ConnectProxy.TCALoader;
 using log4net.Core;
+using System.IO.Ports;
+using System.IO;
 
 namespace ConnectProxy
 {
     public partial class ConnctConfig : Form
     {
-        
+
         public ConnctConfig()
         {
             InitializeComponent();
+            validComportList = SerialPort.GetPortNames();
+            comboBox_ComportList.DataSource = validComportList;
+            TelnetFSM telnetFSM = new TelnetFSM();
             
-            //_tcaControler = new TCAControler();
-            //RunTimeError startTCAError = new RunTimeError();
-            //if (!_tcaControler.startTCA(startTCAError, "127.0.0.1", @"C:\Program Files (x86)\Ericsson\TCA\Bin\TSL\Release\TSL.exe"))
-            //{
-            //    System.Console.WriteLine(startTCAError.Errordescription);
-            //}
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
 
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void ConnctConfig_FormClosed(object sender, FormClosedEventArgs e)
         {
-            RunTimeError error = new RunTimeError();
-            //_tcaControler.stopTCA(error);
+
         }
-        private TCAControler _tcaControler;
+
+        private void button_tcaFolderBrowser_Click(object sender, EventArgs e)
+        {
+
+            if (openFileDialog_TCA.ShowDialog().Equals(DialogResult.OK))
+            {
+                tcaTSLsetPath = openFileDialog_TCA.FileNames[0];
+                textBox_TCATSLPath.Text = tcaTSLsetPath;
+            }
+        }
+
+        private void textBox_TCATSLPath_TextChanged(object sender, EventArgs e)
+        {
+            string tslPath = textBox_TCATSLPath.Text;
+            if (File.Exists(tslPath))
+            {
+                tcaTSLsetPath = tslPath;
+            }
+            else if (tslPath.Length == 0)
+            {
+                return;
+            }
+            else
+            {
+                textBox_TCATSLPath.Clear();
+                MessageBox.Show("Can not find the [TSL.exe] from folder:" + tslPath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        public string tcaTSLsetPath  { get; private set ;}= null;
+        public string[] validComportList = null;
+
+        private void button_RefreshComportList_Click(object sender, EventArgs e)
+        {
+            validComportList = SerialPort.GetPortNames();
+            comboBox_ComportList.DataSource = validComportList;
+        }
     }
 }
