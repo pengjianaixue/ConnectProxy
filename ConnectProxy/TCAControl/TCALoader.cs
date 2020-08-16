@@ -15,22 +15,22 @@ namespace ConnectProxy.TCALoader
     {
         public TCAControler()
         {
-            cpriPortMapping.Add("1A", 0);
-            cpriPortMapping.Add("1B", 1);
-            cpriPortMapping.Add("2A", 2);
-            cpriPortMapping.Add("2B", 3);
-            cpriPortMapping.Add("3A", 4);
-            cpriPortMapping.Add("3B", 5);
-            cpriPortMapping.Add("4A", 6);
-            cpriPortMapping.Add("4B", 7);
-            cpriPortMapping.Add("5A", 8);
-            cpriPortMapping.Add("5B", 9);
-            cpriPortMapping.Add("6A", 10);
-            cpriPortMapping.Add("6B", 11);
-            cpriPortMapping.Add("7A", 12);
-            cpriPortMapping.Add("7B", 13);
-            cpriPortMapping.Add("8A", 14);
-            cpriPortMapping.Add("8B", 15);
+            //cpriPortMapping.Add("1A", 0);
+            //cpriPortMapping.Add("1B", 1);
+            //cpriPortMapping.Add("2A", 2);
+            //cpriPortMapping.Add("2B", 3);
+            //cpriPortMapping.Add("3A", 4);
+            //cpriPortMapping.Add("3B", 5);
+            //cpriPortMapping.Add("4A", 6);
+            //cpriPortMapping.Add("4B", 7);
+            //cpriPortMapping.Add("5A", 8);
+            //cpriPortMapping.Add("5B", 9);
+            //cpriPortMapping.Add("6A", 10);
+            //cpriPortMapping.Add("6B", 11);
+            //cpriPortMapping.Add("7A", 12);
+            //cpriPortMapping.Add("7B", 13);
+            //cpriPortMapping.Add("8A", 14);
+            //cpriPortMapping.Add("8B", 15);
             //logRecorder = new FileAppender(ILayout layout, "./TCALoader/" + DateTime.Now.ToString() + "log.txt", true);
             //logRecorder.Writer.WriteLineAsync();
         }

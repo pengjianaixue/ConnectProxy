@@ -4,6 +4,7 @@ using SuperSocket.SocketBase.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,16 +19,51 @@ namespace ConnectProxy.TCAControl
             OperationalSuccess,
             OperationalFail
         }
-        public TCACommandWarpper(string tslPath)
+        public TCACommandWarpper(string tcaPath)
         {
-
+            tslPath = tcaPath;
+            // using the reflection get the command function and to run
+            warpperType = Type.GetType("ConnectProxy.TCAControl.TCACommandWarpper");
+            warpperObj = this;
+            MethodInfo[] TCACommandMethod = warpperType.GetMethods();
+            foreach (var item in TCACommandMethod)
+            {
+                string[] methodDeclarationInfo = item.ToString().Split('(');
+                string[] methodName = methodDeclarationInfo[0].Split(' ');
+                tcaCommandMethod.Add(methodName[1], item);
+            }
 
         }
         #region Interface
+        // using the reflection get the command function and to run
+        public void callTCACommand(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
+        {
+            if (!tCAisOpen)
+            {
+                AppSession.Send("Error:" + string.Format("{0,4}", ErrorCode.TCANotStart));
+                return;
+            }
+            if (stringRequestInfo.Key.Length == 0)
+            {
+                return;
+            }
+            if (tcaCommandMethod.ContainsKey(stringRequestInfo.Key))
+            {
+                object[]  parameters = new object[] { AppSession, stringRequestInfo };
+                tcaCommandMethod[stringRequestInfo.Key].Invoke(this, parameters);
+            }
+
+        }
+
         public void startTCAProgramm(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
 
             RunTimeError runTimeError = new RunTimeError();
+            if (tslPath.Length == 0 )
+            {
+                AppSession.sendNoNewLine("please set the Lab PC TCA(TSL.exe) path");
+                return;
+            }
             if (!tCAControl.startTCA(runTimeError, "localhost", tslPath))
             {
                 AppSession.sendWithAppendPropmt("open TCA fail:"+ runTimeError.Errordescription);
@@ -650,6 +686,9 @@ namespace ConnectProxy.TCAControl
         {
             return tCAisOpen;
         }
+        private Dictionary<string, MethodInfo> tcaCommandMethod = new Dictionary<string, MethodInfo>();
+        private Type warpperType;
+        private Object warpperObj;
         private string tslPath = "";
         private bool tCAisOpen = false;
         private TCAControler tCAControl = new TCAControler(); 

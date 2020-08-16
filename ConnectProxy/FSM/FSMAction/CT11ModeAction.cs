@@ -1,4 +1,5 @@
-﻿using ConnectProxy.TelnetServerSim;
+﻿using ConnectProxy.TCAControl;
+using ConnectProxy.TelnetServerSim;
 using SuperSocket.SocketBase.Protocol;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace ConnectProxy.FSM.FSMAction
         public CT11ModeAction(ref FSMData fSMData)
         {
             ruModeFSMData = fSMData;
+            tCACommandWarpper = new TCACommandWarpper(tslPath);
             CT11ModeActionDic.Add("SendRUCommand", RuCommandSend);
             CT11ModeActionDic.Add("ExitCT11Mode", exitCT11Mode);
         }
@@ -53,6 +55,8 @@ namespace ConnectProxy.FSM.FSMAction
 
         //private ParameterizedThreadStart serialRecviParamter;
         //private Thread serialRecviThread = null; 
+        private string tslPath = "";
+        private TCACommandWarpper tCACommandWarpper;
         private bool isEnterRuCommandMode = false;
         private bool isRunningRuCommandMode = false;
         private Dictionary<string, Action<TelnetAppSession, StringRequestInfo>> CT11ModeActionDic

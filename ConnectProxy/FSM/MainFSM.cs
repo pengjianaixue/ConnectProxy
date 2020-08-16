@@ -80,6 +80,7 @@ namespace ConnectProxy
             //Action must Instantiate after FSM member Instantiate
             connectedAction = new ConnectedAction(ref fSMData);
             ruModeAction = new RuModeAction(ref fSMData);
+            ct11ModeAction = new CT11ModeAction(ref fSMData);
 
         }
         public void stopFSM()
@@ -132,6 +133,7 @@ namespace ConnectProxy
         private StateMachineDefinitionBuilder<States, Events> proxyRunMachine = new StateMachineDefinitionBuilder<States, Events>();
         private FSMData fSMData;
         private ConnectedAction connectedAction = null;
+        private CT11ModeAction ct11ModeAction = null;
         private RuModeAction ruModeAction = null;
         #region ActionDic
         //private Dictionary<string, Action<TelnetAppSession, StringRequestInfo>> connectedRequestHandleAction
