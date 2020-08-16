@@ -182,6 +182,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FSM\FSMAction\ConnectedAction.cs" />
+    <Compile Include="FSM\FSMAction\CT11ModeAction.cs" />
     <Compile Include="FSM\FSMAction\interface\IFSMAction.cs" />
     <Compile Include="FSM\FSMAction\RuModeAction.cs" />
     <Compile Include="FSM\FSMData.cs" />
@@ -197,6 +198,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TCAControl\TCACommandWarpper.cs" />
     <Compile Include="TCAControl\TCALoader.cs" />
     <Compile Include="TelnetServerSim\TelnetServer.cs" />
     <EmbeddedResource Include="MainForm.resx">

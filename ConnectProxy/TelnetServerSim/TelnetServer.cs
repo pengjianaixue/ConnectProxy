@@ -93,7 +93,7 @@ namespace ConnectProxy.TelnetServerSim
         }
         private void appServer_NewSessionConnected(TelnetAppSession session)
         {
-            session.Send(string.Format("Welcome to  digital brain telnet server\r\nClient Info: Address: {0},Port: {1}\r\nTime: {2}",
+            session.Send(string.Format("Welcome to  digital brain telnet server\r\nServer Info: Address: {0},Port: {1}\r\nTime: {2}",
                 session.LocalEndPoint.Address.MapToIPv4(), session.Config.Port, session.StartTime.ToString()));
             isConnect = true;
         }

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
+using System.Threading;
+using ConnectProxy.TelnetServerSim;
 
 namespace ConnectProxy.ComPortControl
 {
@@ -43,6 +45,36 @@ namespace ConnectProxy.ComPortControl
             runTimeError.Errordescription = "can not find the special serial port on this envirment";
             isOpen = false;
             return false;
+        }
+        public void startForwardRecviThread(TelnetAppSession AppSession)
+        {
+            telnetAppSession = AppSession;
+            recviThreadRunningFlag = true;
+            recviThreadRunControl = true;
+            recviThread = new Thread(recviandForward);
+            recviThread.Start();
+        }
+        public void suspendForwardRecviThread()
+        {
+            if (recviThreadRunningFlag)
+            {
+                recviThread.Suspend();
+                recviThreadRunningFlag = false;
+            }
+        }
+        public void resumeForwardRecviThread()
+        {
+            if (!recviThreadRunningFlag)
+            {
+                recviThread.Resume();
+                recviThreadRunningFlag = true;
+            }
+        }
+        public void stopForwardRecviThread()
+        {
+            recviThreadRunningFlag = false;
+            recviThreadRunControl = false;
+            recviThread.Join();
         }
         public string sendAndRecvi(string cmd, string untilString = "")
         {
@@ -102,6 +134,19 @@ namespace ConnectProxy.ComPortControl
             }
             
         }
+        private void recviandForward()
+        {
+            string recviMsg = "";
+            while (recviThreadRunControl)
+            {
+                recviMsg = read();
+                telnetAppSession.sendNoNewLine(recviMsg);
+            }
+        }
+        private bool recviThreadRunControl = false;
+        private bool recviThreadRunningFlag = false;
+        private TelnetAppSession telnetAppSession = null;
+        private Thread recviThread = null;
         public bool isOpen { get; private set; } = false;
         private string[] comPortLists = null;
         private SerialPort ruSerialPort = new SerialPort();

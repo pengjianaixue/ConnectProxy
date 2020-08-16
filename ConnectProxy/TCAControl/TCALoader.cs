@@ -114,8 +114,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"StartPlayBack" + e.Message);
-                error.Errordescription = "startTCA error : " + e.Message;
+                WriteTraceText(error, "Load LMC error : " + e.Message);
                 return false;
             }
 
@@ -130,8 +129,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"StartPlayBack" + e.Message);
-                error.Errordescription = "startTCA error : " + e.Message;
+                WriteTraceText(error, "Start PlayBack error : " + e.Message);
             }
         }
         //rumaster stop
@@ -143,7 +141,8 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"StopPlayBack" + e.Message);
+                WriteTraceText(error, "StopPlayBack error :" + e.Message);
+
             }
         }
         //rumaster Start Capture
@@ -155,7 +154,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"Start Capture" + e.Message);
+                WriteTraceText(error, "Start Capture error :" + e.Message);
             }
         }
         //rumaster Stop Capture
@@ -168,7 +167,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"Stop Capture" + e.Message);
+                WriteTraceText(error, "Stop Capture error : " + e.Message);
             }
         }
         public void DeleteAllCarriers(RunTimeError error, string cpriport, string flowdirection)
@@ -179,7 +178,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"Rumaster Delete All Carriers!--" + e.Message);
+                WriteTraceText(error, "Rumaster Delete All Carriers error : " + e.Message);
             }
         }
         public void DeleteCarrier(RunTimeError error, string cpriport, string flowdirection, string carrierindex)
@@ -190,7 +189,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"Rumaster Delete Carriers!--" + e.Message);
+                WriteTraceText(error, "Rumaster Delete Carriers error : " + e.Message);
             }
         }
 
@@ -207,7 +206,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"Rumaster Add Carrier failed!--" + e.Message);
+                WriteTraceText(error, "Rumaster Add Carrier  error : " + e.Message);
                 return "";
             }
         }
@@ -286,7 +285,7 @@ namespace ConnectProxy.TCALoader
             catch (Exception e)
             {
 
-                WriteTraceText(error,"Rumaster Set AxcContainerFormat failed!--" + e.Message);
+                WriteTraceText(error, "Rumaster Set AxcContainerFormat  error : " + e.Message);
             }
         }
         public string GetAxcContainerFormat(RunTimeError error, string cpriport, string flowdirection)
@@ -298,7 +297,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"Rumaster Get AxcContainerFormat failed!--" + e.Message);
+                WriteTraceText(error, "Rumaster Get AxcContainerFormat  error : " + e.Message);
             }
             return getdata;
         }
@@ -323,7 +322,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"Rumaster Get Carrier Config failed!--" + e.Message);
+                WriteTraceText(error, "Rumaster Get Carrier Config  error : " + e.Message);
             }
             return getdata;
         }
@@ -338,7 +337,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"Rumaster Get Carrier Config failed!--" + e.Message);
+                WriteTraceText(error, "Rumaster Get Carrier Config  error : " + e.Message);
             }
             return getdata;
         }
@@ -386,7 +385,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"Rumaster Set Carrier Config failed!--" + e.Message);
+                WriteTraceText(error, "Rumaster Set Carrier Config  error : " + e.Message);
             }
         }
 
@@ -422,7 +421,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"Rumaster Set CPRI Config: " + paraname + " failed!--" + e.Message);
+                WriteTraceText(error,"Rumaster Set CPRI Config: " + paraname + " error : " + e.Message);
             }
         }
         public string[] getHwSn(RunTimeError error)
@@ -433,7 +432,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"Rumaster Get HwSn  failed!--" + e.Message);
+                WriteTraceText(error, "Rumaster Get HwSn  error : " + e.Message);
                 return null;
             }
 
@@ -446,7 +445,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"Rumaster Setup Clock Trigger Source  Failed!--" + e.Message);
+                WriteTraceText(error, "Rumaster Setup Clock Trigger Source error : " + e.Message);
             }
         }
         public void SetCpriTriggerSource(RunTimeError error, string triggerPort, string cpriport, string cpriTriggerSource)
@@ -457,7 +456,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"Rumaster Set Cpri Trigger Source Failed!--" + e.Message);
+                WriteTraceText(error, "Rumaster Set Cpri Trigger Source error : " + e.Message);
             }
         }
         //================IQ file====================
@@ -504,22 +503,23 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception exs)
             {
-                WriteTraceText(error,"Rumaster " + cpriport + " IQ File Get Current failed!--" + exs.Message);
+                WriteTraceText(error,"Rumaster " + cpriport + " IQ File Get Current  error : " + exs.Message);
                 return "";
             }
 
         }
 
-        public string IQFilesGetList(RunTimeError error, string cpriport)
+        public string[] IQFilesGetList(RunTimeError error, string cpriport)
         {
             try
             {
-                return string.Join("|", rCpriDataFlow.IQListFiles(cpriport));
+                return rCpriDataFlow.IQListFiles(cpriport);
             }
             catch (Exception exs)
             {
-                WriteTraceText(error,"Rumaster " + cpriport + " IQ File Get List failed!--" + exs.Message);
-                return "";
+                WriteTraceText(error, "Rumaster " + cpriport + " IQ File Get List  error : " + exs.Message);
+                string[] empty = new string[] { ""};
+                return empty;
             }
 
         }
@@ -540,7 +540,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception e)
             {
-                WriteTraceText(error,"Rumaster set IQ file failed!--" + e.Message);
+                WriteTraceText(error, "Rumaster set IQ file  error : " + e.Message);
                 return "False";
             }
         }
@@ -553,7 +553,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception exs)
             {
-                WriteTraceText(error,"Rumaster CpcFile Clear File failed!--" + exs.Message);
+                WriteTraceText(error, "Rumaster CpcFile Clear File error : " + exs.Message);
             }
 
         }
@@ -579,7 +579,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception exs)
             {
-                WriteTraceText(error,"Rumaster CpcFile Add failed!--" + exs.Message);
+                WriteTraceText(error, "Rumaster CpcFile Add error : " + exs.Message);
             }
         }
         public string CpcFileGetCurrent(RunTimeError error, string cpriport)
@@ -590,7 +590,7 @@ namespace ConnectProxy.TCALoader
             }
             catch (Exception exs)
             {
-                WriteTraceText(error,"Rumaster " + cpriport + " CPC File Get Current failed!--" + exs.Message);
+                WriteTraceText(error,"Rumaster " + cpriport + " CPC File Get Current error : " + exs.Message);
                 return "";
             }
         }
@@ -665,7 +665,7 @@ namespace ConnectProxy.TCALoader
         #region privateFunction
         private void WriteTraceText(RunTimeError error, string mes)
         {
-
+            error.Errordescription = mes;
             return;
         }
         private FlowDataType[] getFlowsDataType(string flow)

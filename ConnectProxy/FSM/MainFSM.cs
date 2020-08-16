@@ -54,6 +54,7 @@ namespace ConnectProxy
             //fSMData.elevator.AddExtension(new Appccelerate.Log4Net.StateMachineLogExtension<States, Events>("fSMData.elevator"));
             #endregion      
 
+            
             fSMData.ruSerialPort = new RuSerialPort();
             fSMData.tCALoader = new TCAControler();
             fSMData.telnetServer = new TelnetServer();
