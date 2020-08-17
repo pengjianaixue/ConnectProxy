@@ -9,48 +9,36 @@ using System.Threading.Tasks;
 
 namespace ConnectProxy.FSM.FSMAction
 {
-    class CT11ModeAction
+    class CT11ModeAction:IFSMAction
     {
         public CT11ModeAction(ref FSMData fSMData)
         {
-            ruModeFSMData = fSMData;
+            ct11ModeAction = fSMData;
+            tslPath = fSMData.tcaTSLPath;
             tCACommandWarpper = new TCACommandWarpper(tslPath);
             CT11ModeActionDic.Add("SendRUCommand", RuCommandSend);
             CT11ModeActionDic.Add("ExitCT11Mode", exitCT11Mode);
         }
         private void exitCT11Mode(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
-            isEnterRuCommandMode = false;
-            isRunningRuCommandMode = false;
-            ruModeFSMData.ruSerialPort.stopForwardRecviThread();
-            ruModeFSMData.elevator.Fire(TelnetFSM.Events.GoBack);
+            //isEnterRuCommandMode = false;
+            //isRunningRuCommandMode = false;
+            //ruModeFSMData.ruSerialPort.stopForwardRecviThread();
+            ct11ModeAction.elevator.Fire(TelnetFSM.Events.GoBack);
         }
         private void RuCommandSend(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
-            ruModeFSMData.ruSerialPort.suspendForwardRecviThread();
-            isRunningRuCommandMode = false;
+            ct11ModeAction.ruModeAction.runAction(AppSession, stringRequestInfo);
+
         }
         public void runAction(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
 
-            if (stringRequestInfo.Key.Length != 0 && CT11ModeActionDic.ContainsKey(stringRequestInfo.Key))
+            if (stringRequestInfo.Key.Length != 0 )
             {
-                CT11ModeActionDic[stringRequestInfo.Key](AppSession, stringRequestInfo);
+                tCACommandWarpper.callTCACommand(AppSession, stringRequestInfo);
                 return;
             }
-            if (!isEnterRuCommandMode)
-            {
-                isEnterRuCommandMode = true;
-                ruModeFSMData.ruSerialPort.startForwardRecviThread(AppSession);
-            }
-            if (!isRunningRuCommandMode)
-            {
-                isRunningRuCommandMode = true;
-                ruModeFSMData.ruSerialPort.resumeForwardRecviThread();
-            }
-            string ruCommand = stringRequestInfo.Key + " " + stringRequestInfo.Body;
-            System.Console.WriteLine(ruCommand);
-            ruModeFSMData.ruSerialPort.send(ruCommand);
         }
 
         //private ParameterizedThreadStart serialRecviParamter;
@@ -61,6 +49,6 @@ namespace ConnectProxy.FSM.FSMAction
         private bool isRunningRuCommandMode = false;
         private Dictionary<string, Action<TelnetAppSession, StringRequestInfo>> CT11ModeActionDic
             = new Dictionary<string, Action<TelnetAppSession, StringRequestInfo>>();
-        private FSMData ruModeFSMData;
+        private FSMData ct11ModeAction;
     }
 }

@@ -52,7 +52,10 @@ namespace ConnectProxy.TCAControl
                 object[]  parameters = new object[] { AppSession, stringRequestInfo };
                 tcaCommandMethod[stringRequestInfo.Key].Invoke(this, parameters);
             }
-
+            else
+            {
+                AppSession.sendNoNewLine("can not find this command");
+            }
         }
 
         public void startTCAProgramm(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
@@ -83,11 +86,6 @@ namespace ConnectProxy.TCAControl
         // error How to transfer lmc to lab pc
         public void loadLMC(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
-            if (!isVaildCheck())
-            {
-                AppSession.sendWithAppendPropmt("please start TCA");
-                return;
-            }
             if (getParameterNumber(stringRequestInfo) != 3)
             {
                 sendParameterError(AppSession);
@@ -104,11 +102,7 @@ namespace ConnectProxy.TCAControl
         public void StartPlayBack(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
 
-            if (!isVaildCheck())
-            {
-                AppSession.sendWithAppendPropmt("please start TCA");
-                return;
-            }
+            
             if (getParameterNumber(stringRequestInfo) != 2)
             {
                 sendParameterError(AppSession);
@@ -125,11 +119,7 @@ namespace ConnectProxy.TCAControl
         public void StopPlayBack(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
 
-            if (!isVaildCheck())
-            {
-                AppSession.sendWithAppendPropmt("please start TCA");
-                return;
-            }
+            
             if (getParameterNumber(stringRequestInfo) != 2)
             {
                 sendParameterError(AppSession);
@@ -145,11 +135,7 @@ namespace ConnectProxy.TCAControl
         //rumaster Start Capture
         public void StartCapture(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
-            if (!isVaildCheck())
-            {
-                AppSession.sendWithAppendPropmt("please start TCA");
-                return;
-            }
+            
             if (getParameterNumber(stringRequestInfo) != 2)
             {
                 sendParameterError(AppSession);

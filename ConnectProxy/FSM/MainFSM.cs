@@ -31,7 +31,7 @@ namespace ConnectProxy
             GoBack,
             ServerOpend,
         }
-        public TelnetFSM()
+        public TelnetFSM(FSMConfiguration fsmConfiguration)
         {
             #region Sample
 
@@ -53,8 +53,9 @@ namespace ConnectProxy
 
             //fSMData.elevator.AddExtension(new Appccelerate.Log4Net.StateMachineLogExtension<States, Events>("fSMData.elevator"));
             #endregion      
-
-            
+            mainFSMConfiguration = fsmConfiguration;
+            fSMData.tcaTSLPath = fsmConfiguration.tslPath;
+            fSMData.comPortName = fsmConfiguration.defaultComPortName;
             fSMData.ruSerialPort = new RuSerialPort();
             fSMData.tCALoader = new TCAControler();
             fSMData.telnetServer = new TelnetServer();
@@ -87,13 +88,22 @@ namespace ConnectProxy
         {
             this.fSMData.elevator.Stop();
         }
+        public void restartFSM(FSMConfiguration fsmConfiguration)
+        {
+            fSMData.tcaTSLPath = fsmConfiguration.tslPath;
+            fSMData.comPortName = fsmConfiguration.defaultComPortName;
+            fSMData.telnetServer.stopServer();
+            stopFSM();
+            fSMData.elevator.Start();
+
+        }
         private void connected()
         {
             fSMData.telnetServer.registerRequsetAction(connectedRequestHandler);
         }
         private void startServer()
         {
-            fSMData.telnetServer.startServer("11000");
+            fSMData.telnetServer.startServer(mainFSMConfiguration.serverPort);
             this.fSMData.elevator.Fire(Events.ServerOpend);
         }
         private void waitForConnect()
@@ -122,32 +132,20 @@ namespace ConnectProxy
         
         private void RuCommandMode(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
-
             ruModeAction.runAction(AppSession, stringRequestInfo);
 
         }
         private void CT11CommandMode(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
-
+            ct11ModeAction.runAction(AppSession, stringRequestInfo);
         }
         private StateMachineDefinitionBuilder<States, Events> proxyRunMachine = new StateMachineDefinitionBuilder<States, Events>();
         private FSMData fSMData;
         private ConnectedAction connectedAction = null;
         private CT11ModeAction ct11ModeAction = null;
         private RuModeAction ruModeAction = null;
-        #region ActionDic
-        //private Dictionary<string, Action<TelnetAppSession, StringRequestInfo>> connectedRequestHandleAction
-        //    = new Dictionary<string, Action<TelnetAppSession, StringRequestInfo>>();
-        //private Dictionary<string, Action<TelnetAppSession, StringRequestInfo>> enterRuCommandsModeAction
-        //    = new Dictionary<string, Action<TelnetAppSession, StringRequestInfo>>();
-        //private Dictionary<string, Action<TelnetAppSession, StringRequestInfo>> enterCT11CommandsModeAction
-        //    = new Dictionary<string, Action<TelnetAppSession, StringRequestInfo>>();
-        //private Dictionary<string, Action<TelnetAppSession, StringRequestInfo>> RuCommandsModeAction
-        //    = new Dictionary<string, Action<TelnetAppSession, StringRequestInfo>>();
-        //private Dictionary<string, Action<TelnetAppSession, StringRequestInfo>> CT11CommandsModeAction
-        //    = new Dictionary<string, Action<TelnetAppSession, StringRequestInfo>>();
-        #endregion
-
+        private FSMConfiguration mainFSMConfiguration;
         
+
     }
 }

@@ -28,17 +28,17 @@ namespace ConnectProxy.FSM.FSMAction
             isEnterRuCommandMode = false;
             isRunningRuCommandMode = false;
             ruModeFSMData.ruSerialPort.stopForwardRecviThread();
+            ruModeFSMData.ruSerialPort.close();
             ruModeFSMData.elevator.Fire(TelnetFSM.Events.GoBack);
         }
         private void ct11CommandSend(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
             ruModeFSMData.ruSerialPort.suspendForwardRecviThread();
             isRunningRuCommandMode = false;
+            ruModeFSMData.cT11ModeAction.runAction(AppSession, stringRequestInfo);
         }
         public void runAction(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
-
-
             if (stringRequestInfo.Key.Length != 0 && RuModeActionDic.ContainsKey(stringRequestInfo.Key))
             {
                 RuModeActionDic[stringRequestInfo.Key](AppSession, stringRequestInfo);

@@ -31,11 +31,14 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConnctConfig));
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox_configration = new System.Windows.Forms.GroupBox();
+            this.button_RestartServer = new System.Windows.Forms.Button();
             this.button_RefreshComportList = new System.Windows.Forms.Button();
             this.comboBox_ComportList = new System.Windows.Forms.ComboBox();
             this.button_tcaFolderBrowser = new System.Windows.Forms.Button();
             this.TCAPath = new System.Windows.Forms.Label();
+            this.textBox_ServerPort = new System.Windows.Forms.TextBox();
             this.textBox_TCATSLPath = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tcaFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.openFileDialog_TCA = new System.Windows.Forms.OpenFileDialog();
@@ -49,23 +52,36 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(572, 548);
+            this.panel1.Size = new System.Drawing.Size(544, 227);
             this.panel1.TabIndex = 0;
             // 
             // groupBox_configration
             // 
+            this.groupBox_configration.Controls.Add(this.button_RestartServer);
             this.groupBox_configration.Controls.Add(this.button_RefreshComportList);
             this.groupBox_configration.Controls.Add(this.comboBox_ComportList);
             this.groupBox_configration.Controls.Add(this.button_tcaFolderBrowser);
             this.groupBox_configration.Controls.Add(this.TCAPath);
+            this.groupBox_configration.Controls.Add(this.textBox_ServerPort);
             this.groupBox_configration.Controls.Add(this.textBox_TCATSLPath);
+            this.groupBox_configration.Controls.Add(this.label2);
             this.groupBox_configration.Controls.Add(this.label1);
             this.groupBox_configration.Location = new System.Drawing.Point(12, 12);
             this.groupBox_configration.Name = "groupBox_configration";
-            this.groupBox_configration.Size = new System.Drawing.Size(548, 524);
+            this.groupBox_configration.Size = new System.Drawing.Size(520, 203);
             this.groupBox_configration.TabIndex = 2;
             this.groupBox_configration.TabStop = false;
             this.groupBox_configration.Text = "Configration";
+            // 
+            // button_RestartServer
+            // 
+            this.button_RestartServer.Location = new System.Drawing.Point(386, 163);
+            this.button_RestartServer.Name = "button_RestartServer";
+            this.button_RestartServer.Size = new System.Drawing.Size(128, 34);
+            this.button_RestartServer.TabIndex = 5;
+            this.button_RestartServer.Text = "Restart Server";
+            this.button_RestartServer.UseVisualStyleBackColor = true;
+            this.button_RestartServer.Click += new System.EventHandler(this.button_RestartServer_Click);
             // 
             // button_RefreshComportList
             // 
@@ -83,8 +99,9 @@
             this.comboBox_ComportList.FormattingEnabled = true;
             this.comboBox_ComportList.Location = new System.Drawing.Point(141, 67);
             this.comboBox_ComportList.Name = "comboBox_ComportList";
-            this.comboBox_ComportList.Size = new System.Drawing.Size(274, 20);
+            this.comboBox_ComportList.Size = new System.Drawing.Size(274, 21);
             this.comboBox_ComportList.TabIndex = 3;
+            this.comboBox_ComportList.SelectedIndexChanged += new System.EventHandler(this.comboBox_ComportList_SelectedIndexChanged);
             // 
             // button_tcaFolderBrowser
             // 
@@ -102,24 +119,41 @@
             this.TCAPath.AutoSize = true;
             this.TCAPath.Location = new System.Drawing.Point(12, 28);
             this.TCAPath.Name = "TCAPath";
-            this.TCAPath.Size = new System.Drawing.Size(107, 12);
+            this.TCAPath.Size = new System.Drawing.Size(99, 13);
             this.TCAPath.TabIndex = 0;
             this.TCAPath.Text = "TCA Path(TSL.exe)";
+            // 
+            // textBox_ServerPort
+            // 
+            this.textBox_ServerPort.Location = new System.Drawing.Point(141, 103);
+            this.textBox_ServerPort.Name = "textBox_ServerPort";
+            this.textBox_ServerPort.Size = new System.Drawing.Size(274, 20);
+            this.textBox_ServerPort.TabIndex = 1;
+            this.textBox_ServerPort.TextChanged += new System.EventHandler(this.textBox_ServerPort_TextChanged);
             // 
             // textBox_TCATSLPath
             // 
             this.textBox_TCATSLPath.Location = new System.Drawing.Point(141, 26);
             this.textBox_TCATSLPath.Name = "textBox_TCATSLPath";
-            this.textBox_TCATSLPath.Size = new System.Drawing.Size(274, 21);
+            this.textBox_TCATSLPath.Size = new System.Drawing.Size(274, 20);
             this.textBox_TCATSLPath.TabIndex = 1;
             this.textBox_TCATSLPath.TextChanged += new System.EventHandler(this.textBox_TCATSLPath_TextChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 106);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(60, 13);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "Server Port";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 70);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(119, 12);
+            this.label1.Size = new System.Drawing.Size(92, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Defalut Serial Port";
             // 
@@ -137,7 +171,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(572, 548);
+            this.ClientSize = new System.Drawing.Size(544, 227);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -164,6 +198,9 @@
         private System.Windows.Forms.Button button_tcaFolderBrowser;
         private System.Windows.Forms.OpenFileDialog openFileDialog_TCA;
         private System.Windows.Forms.Button button_RefreshComportList;
+        private System.Windows.Forms.Button button_RestartServer;
+        private System.Windows.Forms.TextBox textBox_ServerPort;
+        private System.Windows.Forms.Label label2;
     }
 }
 

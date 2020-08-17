@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static ConnectProxy.TelnetFSM;
+using System.IO.Ports;
 
 namespace ConnectProxy.FSM.FSMAction
 {
@@ -32,7 +33,6 @@ namespace ConnectProxy.FSM.FSMAction
         }
         private void tryEnterCT11Mode(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
-            
             this.connectedfSMData.elevator.Fire(Events.CT11Command);
         }
         private void tryEnterRuCommandsMode(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
@@ -40,10 +40,24 @@ namespace ConnectProxy.FSM.FSMAction
             if (!connectedfSMData.ruSerialPort.isOpen)
             {
                 RunTimeError runTimeError = new RunTimeError();
-                if (stringRequestInfo.GetFirstParam().Length == 0 && connectedfSMData.comPortName == null)
+                if ((stringRequestInfo.GetFirstParam().Length == 0 && connectedfSMData.comPortName == null)
+                    || !SerialPort.GetPortNames().ToList().Contains(connectedfSMData.comPortName) )
                 {
                     printHelp();
                     return;
+                }
+                else if (stringRequestInfo.GetFirstParam().Length > 0 && !connectedfSMData.ruSerialPort.openComport(stringRequestInfo.GetFirstParam(), runTimeError))
+                {
+                    AppSession.sendWithAppendPropmt(string.Format("open serial port:{0} fail: " + runTimeError.Errordescription, stringRequestInfo.GetFirstParam()));
+                    return;
+                }
+                else if(stringRequestInfo.GetFirstParam().Length == 0 && SerialPort.GetPortNames().ToList().Contains(connectedfSMData.comPortName))
+                {
+                    if (!connectedfSMData.ruSerialPort.openComport(stringRequestInfo.GetFirstParam(), runTimeError))
+                    {
+                        AppSession.sendWithAppendPropmt(string.Format("open serial port:{0} fail: " + runTimeError.Errordescription, connectedfSMData.comPortName));
+                    }
+
                 }
                 else if (stringRequestInfo.GetFirstParam().Equals("Portlist"))
                 {
@@ -52,11 +66,6 @@ namespace ConnectProxy.FSM.FSMAction
                         AppSession.Send(item);
                     }
                     AppSession.sendPropmt();
-                    return;
-                }
-                else if (stringRequestInfo.GetFirstParam().Length > 0 && !connectedfSMData.ruSerialPort.openComport(stringRequestInfo.GetFirstParam(), runTimeError))
-                {
-                    AppSession.sendWithAppendPropmt("open serial port fail: " + runTimeError.Errordescription);
                     return;
                 }
                 this.connectedfSMData.elevator.Fire(Events.RuCommand);

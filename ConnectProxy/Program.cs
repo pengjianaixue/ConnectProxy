@@ -12,10 +12,10 @@ namespace ConnectProxy
 {
     static class Program
     {
-        public static void startServer()
-        {
-            TelnetFSM telnetFSM = new TelnetFSM();
-        }
+        //public static void startServer()
+        //{
+        //    TelnetFSM telnetFSM = new TelnetFSM();
+        //}
         //async Task asyncStartServer()
         //{
         //    var startTask = new Task(startServer);
