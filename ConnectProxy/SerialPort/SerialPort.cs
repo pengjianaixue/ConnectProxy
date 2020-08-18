@@ -32,6 +32,7 @@ namespace ConnectProxy.ComPortControl
                 {
                     ruSerialPort.PortName = ComportName;
                     ruSerialPort.Open();
+                    terminalPropmt = autoDetectPropmt();
                     isOpen = true;
                     return true;
                 }
@@ -45,6 +46,19 @@ namespace ConnectProxy.ComPortControl
             runTimeError.Errordescription = "can not find the special serial port on this envirment";
             isOpen = false;
             return false;
+        }
+        public string recviUntilPropmt(bool useCustomPropmtChar = false, string propmt="")
+        {
+            if (useCustomPropmtChar)
+            {
+                return read(propmt);
+            }
+            else
+            {
+
+                return read(terminalPropmt);
+            }
+
         }
         public void startForwardRecviThread(TelnetAppSession AppSession)
         {
@@ -101,7 +115,7 @@ namespace ConnectProxy.ComPortControl
             }
             
         }
-        public string read(string untilString = "")
+        private string read(string untilString = "")
         {
             try
             {
@@ -143,6 +157,25 @@ namespace ConnectProxy.ComPortControl
                 telnetAppSession.sendNoNewLine(recviMsg);
             }
         }
+        private string autoDetectPropmt()
+        {
+            string propmt = null;
+            int propmtCounter = 0;
+            while (propmtCounter < 3)
+            {
+                send("");
+                Thread.Sleep(10);
+                string temp = ruSerialPort.ReadExisting();
+                if (temp!= propmt)
+                {
+                    propmt = temp;
+                    propmtCounter++;
+                }
+            }
+            return propmt;
+
+        }
+        private string terminalPropmt = null;
         private bool recviThreadRunControl = false;
         private bool recviThreadRunningFlag = false;
         private TelnetAppSession telnetAppSession = null;

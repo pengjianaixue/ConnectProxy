@@ -1,6 +1,7 @@
 ﻿using Appccelerate.StateMachine;
 using ConnectProxy.ComPortControl;
 using ConnectProxy.FSM.FSMAction;
+using ConnectProxy.TCAControl;
 using ConnectProxy.TCALoader;
 using ConnectProxy.TelnetServerSim;
 using System;
@@ -16,11 +17,9 @@ namespace ConnectProxy.FSM
     {
         public ActiveStateMachine<States, Events> elevator;
         public TelnetServer telnetServer;
-        public TCAControler tCALoader;
+        public TCACommandWarpper tCACommand;
         public RuSerialPort ruSerialPort;
         public string tcaTSLPath ;
         public string comPortName ;
-        public CT11ModeAction cT11ModeAction;
-        public RuModeAction ruModeAction;
     }
 }

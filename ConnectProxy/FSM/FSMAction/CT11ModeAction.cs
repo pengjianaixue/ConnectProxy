@@ -13,9 +13,9 @@ namespace ConnectProxy.FSM.FSMAction
     {
         public CT11ModeAction(ref FSMData fSMData)
         {
-            ct11ModeAction = fSMData;
+            _fsmData = fSMData;
             tslPath = fSMData.tcaTSLPath;
-            tCACommandWarpper = new TCACommandWarpper(tslPath);
+            tCACommandWarpper = fSMData.tCACommand;
             CT11ModeActionDic.Add("SendRUCommand", RuCommandSend);
             CT11ModeActionDic.Add("ExitCT11Mode", exitCT11Mode);
         }
@@ -24,12 +24,31 @@ namespace ConnectProxy.FSM.FSMAction
             //isEnterRuCommandMode = false;
             //isRunningRuCommandMode = false;
             //ruModeFSMData.ruSerialPort.stopForwardRecviThread();
-            ct11ModeAction.elevator.Fire(TelnetFSM.Events.GoBack);
+            _fsmData.elevator.Fire(TelnetFSM.Events.GoBack);
         }
+
+        private void ruSerialPortSendAndRecvi(StringRequestInfo stringRequestInfo, TelnetAppSession AppSession)
+        {
+            _fsmData.ruSerialPort.send(stringRequestInfo.Parameters.ToList().ToString());
+            AppSession.sendNoNewLine(_fsmData.ruSerialPort.recviUntilPropmt());
+        }
+
         private void RuCommandSend(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
-            ct11ModeAction.ruModeAction.runAction(AppSession, stringRequestInfo);
-
+            if (_fsmData.ruSerialPort.isOpen)
+            {
+                ruSerialPortSendAndRecvi(stringRequestInfo, AppSession);
+            }
+            else
+            {
+                RunTimeError runTimeError = new RunTimeError();
+                if (!_fsmData.ruSerialPort.openComport(_fsmData.comPortName, runTimeError))
+                {
+                    AppSession.sendNoNewLine("open comport failed,please check the comport number!");
+                    return;
+                }
+                ruSerialPortSendAndRecvi(stringRequestInfo, AppSession);
+            }
         }
         public void runAction(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
@@ -49,6 +68,6 @@ namespace ConnectProxy.FSM.FSMAction
         private bool isRunningRuCommandMode = false;
         private Dictionary<string, Action<TelnetAppSession, StringRequestInfo>> CT11ModeActionDic
             = new Dictionary<string, Action<TelnetAppSession, StringRequestInfo>>();
-        private FSMData ct11ModeAction;
+        private FSMData _fsmData;
     }
 }

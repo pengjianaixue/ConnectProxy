@@ -57,7 +57,7 @@ namespace ConnectProxy
             fSMData.tcaTSLPath = fsmConfiguration.tslPath;
             fSMData.comPortName = fsmConfiguration.defaultComPortName;
             fSMData.ruSerialPort = new RuSerialPort();
-            fSMData.tCALoader = new TCAControler();
+            fSMData.tCACommand = new TCAControl.TCACommandWarpper(fSMData.tcaTSLPath);
             fSMData.telnetServer = new TelnetServer();
             proxyRunMachine.WithInitialState(States.NeedServerOpen);
             //proxyRunMachine.DefineHierarchyOn(States.CT11Mode).WithHistoryType(HistoryType.Deep)

@@ -35,7 +35,7 @@ namespace ConnectProxy.FSM.FSMAction
         {
             ruModeFSMData.ruSerialPort.suspendForwardRecviThread();
             isRunningRuCommandMode = false;
-            ruModeFSMData.cT11ModeAction.runAction(AppSession, stringRequestInfo);
+            ruModeFSMData.tCACommand.callTCACommand(AppSession, stringRequestInfo);
         }
         public void runAction(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
