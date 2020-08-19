@@ -63,13 +63,8 @@ namespace ConnectProxy.FSM.FSMAction
                 AppSession.sendPropmt();
             }
         }
-
-        //private ParameterizedThreadStart serialRecviParamter;
-        //private Thread serialRecviThread = null; 
         private string tslPath = "";
         private TCACommandWarpper tCACommandWarpper;
-        private bool isEnterRuCommandMode = false;
-        private bool isRunningRuCommandMode = false;
         private Dictionary<string, Action<TelnetAppSession, StringRequestInfo>> CT11ModeActionDic
             = new Dictionary<string, Action<TelnetAppSession, StringRequestInfo>>();
         private FSMData _fsmData;

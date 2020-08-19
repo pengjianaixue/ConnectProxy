@@ -17,8 +17,8 @@ namespace ConnectProxy.FileTransfer
 
 
         
-        private BinaryWriter binaryWriter = null;
-        private FileStream fileStream = null;
+        //private BinaryWriter binaryWriter = null;
+        //private FileStream fileStream = null;
     }
 
     class LmcFtpServer

@@ -91,7 +91,7 @@ namespace ConnectProxy.TelnetServerSim
         {
             isConnect = false;
         }
-        public event EventHandler<string> modeChangInfo;
+        //public event EventHandler<string> modeChangInfo;
         public void stopServer()
         {
             telnetServer.Stop();
@@ -162,7 +162,5 @@ namespace ConnectProxy.TelnetServerSim
         private ModeDic modeDic = new ModeDic();
         private ActionDic baseActionDic = new ActionDic();
         private TelnetAppServer telnetServer = new TelnetAppServer();
-        private bool isInMode = false;
-        private string currentMode = null;
     }
 }

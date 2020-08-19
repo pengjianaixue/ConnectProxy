@@ -23,6 +23,8 @@ namespace ConnectProxy
         public ConnctConfig()
         {
             InitializeComponent();
+            this.showToolStripMenuItem.Click += showToolStripMenuItem_Click;
+            this.exitToolStripMenuItem.Click += exitMenuItem_Click;
             validComportList = SerialPort.GetPortNames();
             lmcFtpServer.start();
             if (File.Exists(configFileName))
@@ -131,18 +133,43 @@ namespace ConnectProxy
         private TelnetFSM telnetFSM = null;
         private FSMConfiguration fSMConfiguration = new FSMConfiguration();
 
-        private void contextMenuStrip_hide_Click(object sender, EventArgs e)
+        private void showToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.Show();                              
-            this.WindowState= FormWindowState.Normal;  
-            this.Activate();                          
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+            this.Activate();
+
+
         }
+        private void exitMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Are you sure to close the Server?", "Confirm",
+               System.Windows.Forms.MessageBoxButtons.YesNo,
+               System.Windows.Forms.MessageBoxIcon.Warning)== System.Windows.Forms.DialogResult.Yes)
+            {
+                notifyIcon_hide.Visible = false;   
+                this.Close();                  
+                this.Dispose();                
+                Application.Exit();            
+            }
+
+        }
+
 
         private void notifyIcon_hide_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             this.Visible = true;                  
             this.WindowState = FormWindowState.Normal;
             this.notifyIcon_hide.Visible = true;
+        }
+
+        private void ConnctConfig_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;           
+                this.Hide();               
+            }
         }
     }
 }

@@ -88,7 +88,11 @@ namespace ConnectProxy.ComPortControl
         {
             recviThreadRunningFlag = false;
             recviThreadRunControl = false;
-            recviThread.Join();
+            if (recviThread != null)
+            {
+                recviThread.Join();
+            }
+            
         }
         public string sendAndRecvi(string cmd, string untilString = "")
         {

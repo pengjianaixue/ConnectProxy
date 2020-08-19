@@ -869,8 +869,7 @@ namespace ConnectProxy.TCALoader
         private IRumaControlClient rumaClient;
         private ApplicationControl tas;
         private TslControlClient tsl;
-        private static Dictionary<string, ulong> cpriPortMapping = new Dictionary<string, ulong>();
-        private readonly FileAppender logRecorder;
+        private Dictionary<string, ulong> cpriPortMapping = new Dictionary<string, ulong>();
         
     }
 }

@@ -105,7 +105,7 @@
             this.comboBox_ComportList.FormattingEnabled = true;
             this.comboBox_ComportList.Location = new System.Drawing.Point(141, 67);
             this.comboBox_ComportList.Name = "comboBox_ComportList";
-            this.comboBox_ComportList.Size = new System.Drawing.Size(274, 21);
+            this.comboBox_ComportList.Size = new System.Drawing.Size(274, 20);
             this.comboBox_ComportList.TabIndex = 3;
             this.comboBox_ComportList.SelectedIndexChanged += new System.EventHandler(this.comboBox_ComportList_SelectedIndexChanged);
             // 
@@ -125,7 +125,7 @@
             this.TCAPath.AutoSize = true;
             this.TCAPath.Location = new System.Drawing.Point(12, 28);
             this.TCAPath.Name = "TCAPath";
-            this.TCAPath.Size = new System.Drawing.Size(99, 13);
+            this.TCAPath.Size = new System.Drawing.Size(107, 12);
             this.TCAPath.TabIndex = 0;
             this.TCAPath.Text = "TCA Path(TSL.exe)";
             // 
@@ -133,7 +133,7 @@
             // 
             this.textBox_ServerPort.Location = new System.Drawing.Point(141, 103);
             this.textBox_ServerPort.Name = "textBox_ServerPort";
-            this.textBox_ServerPort.Size = new System.Drawing.Size(274, 20);
+            this.textBox_ServerPort.Size = new System.Drawing.Size(274, 21);
             this.textBox_ServerPort.TabIndex = 1;
             this.textBox_ServerPort.TextChanged += new System.EventHandler(this.textBox_ServerPort_TextChanged);
             // 
@@ -141,7 +141,7 @@
             // 
             this.textBox_TCATSLPath.Location = new System.Drawing.Point(141, 26);
             this.textBox_TCATSLPath.Name = "textBox_TCATSLPath";
-            this.textBox_TCATSLPath.Size = new System.Drawing.Size(274, 20);
+            this.textBox_TCATSLPath.Size = new System.Drawing.Size(274, 21);
             this.textBox_TCATSLPath.TabIndex = 1;
             this.textBox_TCATSLPath.TextChanged += new System.EventHandler(this.textBox_TCATSLPath_TextChanged);
             // 
@@ -150,7 +150,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 106);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(60, 13);
+            this.label2.Size = new System.Drawing.Size(71, 12);
             this.label2.TabIndex = 0;
             this.label2.Text = "Server Port";
             // 
@@ -159,7 +159,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 70);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(92, 13);
+            this.label1.Size = new System.Drawing.Size(119, 12);
             this.label1.TabIndex = 0;
             this.label1.Text = "Defalut Serial Port";
             // 
@@ -173,6 +173,7 @@
             // 
             // notifyIcon_hide
             // 
+            this.notifyIcon_hide.ContextMenuStrip = this.contextMenuStrip_hide;
             this.notifyIcon_hide.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon_hide.Icon")));
             this.notifyIcon_hide.Text = "ConnectConfig";
             this.notifyIcon_hide.Visible = true;
@@ -184,19 +185,18 @@
             this.showToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.contextMenuStrip_hide.Name = "contextMenuStrip_hide";
-            this.contextMenuStrip_hide.Size = new System.Drawing.Size(104, 48);
-            this.contextMenuStrip_hide.Click += new System.EventHandler(this.contextMenuStrip_hide_Click);
+            this.contextMenuStrip_hide.Size = new System.Drawing.Size(108, 48);
             // 
             // showToolStripMenuItem
             // 
             this.showToolStripMenuItem.Name = "showToolStripMenuItem";
-            this.showToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.showToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.showToolStripMenuItem.Text = "Show";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // ConnctConfig
@@ -212,6 +212,7 @@
             this.Name = "ConnctConfig";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ConnctConfig";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConnctConfig_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ConnctConfig_FormClosed);
             this.panel1.ResumeLayout(false);
             this.groupBox_configration.ResumeLayout(false);
