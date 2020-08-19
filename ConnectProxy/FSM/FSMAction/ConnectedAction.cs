@@ -53,11 +53,11 @@ namespace ConnectProxy.FSM.FSMAction
                 }
                 else if(stringRequestInfo.GetFirstParam().Length == 0 && SerialPort.GetPortNames().ToList().Contains(connectedfSMData.comPortName))
                 {
-                    if (!connectedfSMData.ruSerialPort.openComport(stringRequestInfo.GetFirstParam(), runTimeError))
+                    if (!connectedfSMData.ruSerialPort.openComport(connectedfSMData.comPortName, runTimeError))
                     {
                         AppSession.sendWithAppendPropmt(string.Format("open serial port:{0} fail: " + runTimeError.Errordescription, connectedfSMData.comPortName));
+                        return;
                     }
-
                 }
                 else if (stringRequestInfo.GetFirstParam().Equals("Portlist"))
                 {

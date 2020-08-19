@@ -55,7 +55,6 @@ namespace ConnectProxy.FSM.FSMAction
                 ruModeFSMData.ruSerialPort.resumeForwardRecviThread();
             }
             string ruCommand = stringRequestInfo.Key + " " + stringRequestInfo.Body;
-            System.Console.WriteLine(ruCommand);
             ruModeFSMData.ruSerialPort.send(ruCommand);
         }
 

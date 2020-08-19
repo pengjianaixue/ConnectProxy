@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConnctConfig));
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox_configration = new System.Windows.Forms.GroupBox();
@@ -42,8 +43,13 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tcaFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.openFileDialog_TCA = new System.Windows.Forms.OpenFileDialog();
+            this.notifyIcon_hide = new System.Windows.Forms.NotifyIcon(this.components);
+            this.contextMenuStrip_hide = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.showToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.groupBox_configration.SuspendLayout();
+            this.contextMenuStrip_hide.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -165,6 +171,34 @@
             // 
             this.openFileDialog_TCA.FileName = "TSL.exe";
             // 
+            // notifyIcon_hide
+            // 
+            this.notifyIcon_hide.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon_hide.Icon")));
+            this.notifyIcon_hide.Text = "ConnectConfig";
+            this.notifyIcon_hide.Visible = true;
+            this.notifyIcon_hide.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_hide_MouseDoubleClick);
+            // 
+            // contextMenuStrip_hide
+            // 
+            this.contextMenuStrip_hide.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showToolStripMenuItem,
+            this.exitToolStripMenuItem});
+            this.contextMenuStrip_hide.Name = "contextMenuStrip_hide";
+            this.contextMenuStrip_hide.Size = new System.Drawing.Size(104, 48);
+            this.contextMenuStrip_hide.Click += new System.EventHandler(this.contextMenuStrip_hide_Click);
+            // 
+            // showToolStripMenuItem
+            // 
+            this.showToolStripMenuItem.Name = "showToolStripMenuItem";
+            this.showToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.showToolStripMenuItem.Text = "Show";
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            // 
             // ConnctConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -182,6 +216,7 @@
             this.panel1.ResumeLayout(false);
             this.groupBox_configration.ResumeLayout(false);
             this.groupBox_configration.PerformLayout();
+            this.contextMenuStrip_hide.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -201,6 +236,10 @@
         private System.Windows.Forms.Button button_RestartServer;
         private System.Windows.Forms.TextBox textBox_ServerPort;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.NotifyIcon notifyIcon_hide;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip_hide;
+        private System.Windows.Forms.ToolStripMenuItem showToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
     }
 }
 

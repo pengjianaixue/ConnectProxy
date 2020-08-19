@@ -159,9 +159,10 @@ namespace ConnectProxy.ComPortControl
         }
         private string autoDetectPropmt()
         {
-            string propmt = null;
+            string propmt = "";
             int propmtCounter = 0;
-            while (propmtCounter < 3)
+            int timeOutConunter = 0;
+            while (propmtCounter < 3 && timeOutConunter < 200)
             {
                 send("");
                 Thread.Sleep(10);
@@ -171,6 +172,7 @@ namespace ConnectProxy.ComPortControl
                     propmt = temp;
                     propmtCounter++;
                 }
+                timeOutConunter++;
             }
             return propmt;
 

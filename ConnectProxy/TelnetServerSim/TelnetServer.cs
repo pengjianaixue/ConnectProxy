@@ -35,6 +35,11 @@ namespace ConnectProxy.TelnetServerSim
             base.SocketSession.Client.SendData(System.Text.Encoding.Default.GetBytes(message));
 
         }
+        protected override void HandleUnknownRequest(StringRequestInfo requestInfo)
+        {
+            System.Console.WriteLine(requestInfo.Key);
+
+        }
     }
     class TelnetAppServer : AppServer<TelnetAppSession>
     {

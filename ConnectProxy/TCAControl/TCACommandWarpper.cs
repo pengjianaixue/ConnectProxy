@@ -38,13 +38,14 @@ namespace ConnectProxy.TCAControl
         // using the reflection get the command function and to run
         public void callTCACommand(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
-            if (!tCAisOpen)
+            if (stringRequestInfo.Key == "help")
             {
-                AppSession.Send("Error:" + string.Format("{0,4}", ErrorCode.TCANotStart));
+                help(AppSession, stringRequestInfo);
                 return;
             }
-            if (stringRequestInfo.Key.Length == 0)
+            if (!tCAisOpen && stringRequestInfo.Key != "startTCAProgramm")
             {
+                AppSession.Send("TCA not start, please run startTCAProgramm first");
                 return;
             }
             if (tcaCommandMethod.ContainsKey(stringRequestInfo.Key))
@@ -57,7 +58,13 @@ namespace ConnectProxy.TCAControl
                 AppSession.sendNoNewLine("can not find this command");
             }
         }
-
+        public void help(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
+        {
+            foreach (var item in tcaCommandMethod)
+            {
+                AppSession.sendWithAppendPropmt(item.Key);
+            }
+        }
         public void startTCAProgramm(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
 

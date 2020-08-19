@@ -58,6 +58,10 @@ namespace ConnectProxy.FSM.FSMAction
                 tCACommandWarpper.callTCACommand(AppSession, stringRequestInfo);
                 return;
             }
+            else
+            {
+                AppSession.sendPropmt();
+            }
         }
 
         //private ParameterizedThreadStart serialRecviParamter;

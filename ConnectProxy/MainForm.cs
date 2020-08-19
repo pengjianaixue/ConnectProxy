@@ -13,6 +13,7 @@ using System.IO.Ports;
 using System.IO;
 using ConnectProxy.ConfigLoad;
 using ConnectProxy.FSM;
+using ConnectProxy.FileTransfer;
 
 namespace ConnectProxy
 {
@@ -23,6 +24,7 @@ namespace ConnectProxy
         {
             InitializeComponent();
             validComportList = SerialPort.GetPortNames();
+            lmcFtpServer.start();
             if (File.Exists(configFileName))
             {
                 tcaTSLsetPath = IniFileOperator.getKeyValue("tslPath", "", configFileName);
@@ -51,6 +53,7 @@ namespace ConnectProxy
         }
         private void ConnctConfig_FormClosed(object sender, FormClosedEventArgs e)
         {
+            lmcFtpServer.stopServer();
 
         }
 
@@ -121,12 +124,25 @@ namespace ConnectProxy
         }
         public string tcaTSLsetPath { get; private set; } = null;
         public string[] validComportList = null;
-        public  unsafe string  defaultComportNmae = null;
-        private unsafe string serverPort = "";
+        public  string  defaultComportNmae = null;
+        private LmcFtpServer lmcFtpServer = new LmcFtpServer();
+        private string serverPort = "";
         private string configFileName = "./config.ini";
         private TelnetFSM telnetFSM = null;
         private FSMConfiguration fSMConfiguration = new FSMConfiguration();
 
-        
+        private void contextMenuStrip_hide_Click(object sender, EventArgs e)
+        {
+            this.Show();                              
+            this.WindowState= FormWindowState.Normal;  
+            this.Activate();                          
+        }
+
+        private void notifyIcon_hide_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.Visible = true;                  
+            this.WindowState = FormWindowState.Normal;
+            this.notifyIcon_hide.Visible = true;
+        }
     }
 }

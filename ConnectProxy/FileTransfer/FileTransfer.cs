@@ -4,50 +4,58 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using FubarDev.FtpServer;
 using Microsoft.Extensions.DependencyInjection;
+using System.IO;
+using Midapex.Net.Ftp;
+using Midapex.Net;
 
 namespace ConnectProxy.FileTransfer
 {
-    class FileTransfer
+    class FileTransferServer
     {
 
-        //public string getFileFromRemote(string remoteFileName)
-        //{
-        //    // Build the service provider
-        //    using (var serviceProvider = services.BuildServiceProvider())
-        //    {
 
-        //        // Setup dependency injection
-        //        var services = new ServiceCollection();
 
-        //        // use %TEMP%/TestFtpServer as root folder
-        //        services.Configure<DotNetFileSystemOptions>(opt => opt
-        //            .RootPath = Path.Combine(Path.GetTempPath(), "TestFtpServer"));
-
-        //        // Add FTP server services
-        //        // DotNetFileSystemProvider = Use the .NET file system functionality
-        //        // AnonymousMembershipProvider = allow only anonymous logins
-        //        services.AddFtpServer(builder => builder
-        //            .UseDotNetFileSystem() // Use the .NET file system functionality
-        //            .EnableAnonymousAuthentication()); // allow anonymous logins
-        //        // Configure the FTP server
-        //        services.Configure<FtpServerOptions>(opt => opt.ServerAddress = "127.0.0.1");
-        //        // Initialize the FTP server
-        //        var ftpServerHost = serviceProvider.GetRequiredService<IFtpServerHost>();
-
-        //        // Start the FTP server
-        //        ftpServerHost.StartAsync(CancellationToken.None).Wait();
-
-        //        Console.WriteLine("Press ENTER/RETURN to close the test application.");
-        //        Console.ReadLine();
-
-        //        // Stop the FTP server
-        //        ftpServerHost.StopAsync(CancellationToken.None).Wait();
-        //    }
-
-        //    private IServiceCollection ftpServer = new ServiceCollection();
-        //}
-
+        
+        private BinaryWriter binaryWriter = null;
+        private FileStream fileStream = null;
     }
+
+    class LmcFtpServer
+    {
+
+        public LmcFtpServer()
+        {
+            server.Capacity = 1000;
+            server.HeartBeatPeriod = 120000;
+            FtpUser user = new FtpUser("ftp");
+            user.Password = "ftp";
+            user.AllowWrite = true;
+            user.MaxConnectionCount = 1;
+            user.MaxUploadFileLength = 1024 * 1024 * 100;
+            server.AddUser(user);
+            string homeDir = Environment.CurrentDirectory + "/RecviFile";
+            if (!Directory.Exists(homeDir))
+            {
+                Directory.CreateDirectory(homeDir);
+            }
+            user.HomeDir = homeDir;
+            server.AnonymousUser.HomeDir = Environment.CurrentDirectory;
+        }
+        public void start()
+        {
+            server.Start();
+        }
+        public void restart()
+        {
+            server.Stop();
+            server.Start();
+        }
+        public void stopServer()
+        {
+            server.Stop();
+        }
+        private FtpServer server = new FtpServer();
+    }
+
 }

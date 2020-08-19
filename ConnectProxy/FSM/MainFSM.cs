@@ -63,6 +63,7 @@ namespace ConnectProxy
             //proxyRunMachine.DefineHierarchyOn(States.CT11Mode).WithHistoryType(HistoryType.Deep)
             proxyRunMachine.In(States.NeedServerOpen).ExecuteOnEntry(startServer).On(Events.ServerOpend).Goto(States.WaitConncet).Execute(waitForConnect);
             proxyRunMachine.In(States.WaitConncet).On(Events.Connncted).Goto(States.Connncted).Execute(connected);
+            proxyRunMachine.In(States.Connncted).On(Events.CT11Command).Goto(States.CT11Mode).Execute(ct11Mode);
             proxyRunMachine.In(States.Connncted).On(Events.RuCommand).Goto(States.RuMode).Execute(ruMode);
             proxyRunMachine.In(States.Connncted).On(Events.Disconnect).Goto(States.WaitConncet).Execute(waitForConnect);
             proxyRunMachine.In(States.CT11Mode).On(Events.RuCommand).Goto(States.RuMode).Execute(ruMode);
