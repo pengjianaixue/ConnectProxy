@@ -133,7 +133,7 @@ namespace ConnectProxy
         private TelnetFSM telnetFSM = null;
         private FSMConfiguration fSMConfiguration = new FSMConfiguration();
         private FileTransferServer fileTransferServer = new FileTransferServer();
-        private void contextMenuStrip_hide_Click(object sender, EventArgs e)
+        private void showToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Show();
             this.WindowState = FormWindowState.Normal;
