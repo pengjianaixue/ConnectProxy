@@ -24,7 +24,7 @@ namespace ConnectProxy
         {
             InitializeComponent();
             validComportList = SerialPort.GetPortNames();
-            lmcFtpServer.start();
+            //lmcFtpServer.start();
             if (File.Exists(configFileName))
             {
                 tcaTSLsetPath = IniFileOperator.getKeyValue("tslPath", "", configFileName);
@@ -53,7 +53,7 @@ namespace ConnectProxy
         }
         private void ConnctConfig_FormClosed(object sender, FormClosedEventArgs e)
         {
-            lmcFtpServer.stopServer();
+            //lmcFtpServer.stopServer();
 
         }
 
@@ -125,12 +125,12 @@ namespace ConnectProxy
         public string tcaTSLsetPath { get; private set; } = null;
         public string[] validComportList = null;
         public  string  defaultComportNmae = null;
-        private LmcFtpServer lmcFtpServer = new LmcFtpServer();
+        //private LmcFtpServer lmcFtpServer = new LmcFtpServer();
         private string serverPort = "";
         private string configFileName = "./config.ini";
         private TelnetFSM telnetFSM = null;
         private FSMConfiguration fSMConfiguration = new FSMConfiguration();
-
+        private FileTransferServer fileTransferServer = new FileTransferServer();
         private void contextMenuStrip_hide_Click(object sender, EventArgs e)
         {
             this.Show();                              
