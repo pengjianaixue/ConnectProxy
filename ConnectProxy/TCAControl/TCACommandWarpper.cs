@@ -99,7 +99,14 @@ namespace ConnectProxy.TCAControl
                 return;
             }
             RunTimeError error = new RunTimeError();
-            if (!tCAControl.loadLMC(error, getParameter(stringRequestInfo, 1), getParameter(stringRequestInfo, 2), getParameter(stringRequestInfo, 3)))
+            string fileName = System.IO.Path.GetFileName(stringRequestInfo.GetFirstParam());
+            fileName = Environment.CurrentDirectory + "/RecviFile/" + fileName;
+            if (!System.IO.File.Exists(fileName))
+            {
+                AppSession.sendNoNewLine(string.Format("Load LMC fail, The special LMC file: {0} is not exist on server local PC", 
+                    System.IO.Path.GetFileName(stringRequestInfo.GetFirstParam())));
+            }
+            if (!tCAControl.loadLMC(error, fileName, getParameter(stringRequestInfo, 2), getParameter(stringRequestInfo, 3)))
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
             }

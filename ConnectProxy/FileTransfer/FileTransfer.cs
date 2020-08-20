@@ -6,8 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
-using Midapex.Net.Ftp;
-using Midapex.Net;
 using System.Net.Sockets;
 
 namespace ConnectProxy.FileTransfer
@@ -27,7 +25,7 @@ namespace ConnectProxy.FileTransfer
         {
             while (runFlag)
             {
-                var tcpClient = listener.AcceptSocket();
+                var tcpClient = listener.AcceptTcpClient();
                 Thread recviThread = new Thread(recviFile);
                 recviThread.Start(tcpClient);
             }
@@ -64,10 +62,10 @@ namespace ConnectProxy.FileTransfer
                 fileStream.FlushAsync();
                 fileStream.Close();
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
                 recviIsSuccess = false;
-                if (fileStream!=null)
+                if (fileStream != null)
                 {
                     fileStream.Close();
                 }
@@ -96,45 +94,44 @@ namespace ConnectProxy.FileTransfer
         private Thread acceptThread = null;
         private Thread recviThread = null;
         private TcpListener listener = new TcpListener(System.Net.IPAddress.Any, 12001);
-        private BinaryWriter binaryWriter = null;
         private FileStream fileStream = null;
     }
 
-    class LmcFtpServer
-    {
+    //class LmcFtpServer
+    //{
 
-        public LmcFtpServer()
-        {
-            server.Capacity = 1000;
-            server.HeartBeatPeriod = 120000;
-            FtpUser user = new FtpUser("ftp");
-            user.Password = "ftp";
-            user.AllowWrite = true;
-            user.MaxConnectionCount = 1;
-            user.MaxUploadFileLength = 1024 * 1024 * 100;
-            server.AddUser(user);
-            string homeDir = Environment.CurrentDirectory + "/RecviFile";
-            if (!Directory.Exists(homeDir))
-            {
-                Directory.CreateDirectory(homeDir);
-            }
-            user.HomeDir = homeDir;
-            server.AnonymousUser.HomeDir = Environment.CurrentDirectory;
-        }
-        public void start()
-        {
-            server.Start();
-        }
-        public void restart()
-        {
-            server.Stop();
-            server.Start();
-        }
-        public void stopServer()
-        {
-            server.Stop();
-        }
-        private FtpServer server = new FtpServer();
-    }
+    //    public LmcFtpServer()
+    //    {
+    //        server.Capacity = 1000;
+    //        server.HeartBeatPeriod = 120000;
+    //        FtpUser user = new FtpUser("ftp");
+    //        user.Password = "ftp";
+    //        user.AllowWrite = true;
+    //        user.MaxConnectionCount = 1;
+    //        user.MaxUploadFileLength = 1024 * 1024 * 100;
+    //        server.AddUser(user);
+    //        string homeDir = Environment.CurrentDirectory + "/RecviFile";
+    //        if (!Directory.Exists(homeDir))
+    //        {
+    //            Directory.CreateDirectory(homeDir);
+    //        }
+    //        user.HomeDir = homeDir;
+    //        server.AnonymousUser.HomeDir = Environment.CurrentDirectory;
+    //    }
+    //    public void start()
+    //    {
+    //        server.Start();
+    //    }
+    //    public void restart()
+    //    {
+    //        server.Stop();
+    //        server.Start();
+    //    }
+    //    public void stopServer()
+    //    {
+    //        server.Stop();
+    //    }
+    //    private FtpServer server = new FtpServer();
+    //}
 
 }

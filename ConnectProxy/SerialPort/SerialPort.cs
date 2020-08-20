@@ -113,7 +113,7 @@ namespace ConnectProxy.ComPortControl
                 ruSerialPort.Write(cmd);
                 return true;
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
                 return false;
             }
@@ -132,7 +132,7 @@ namespace ConnectProxy.ComPortControl
                     return ruSerialPort.ReadTo(untilString);
                 }
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
                 return "";
             }
@@ -146,7 +146,7 @@ namespace ConnectProxy.ComPortControl
                 isOpen = false;
                 return true;
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
                 return false;
             }

@@ -103,14 +103,22 @@ namespace ConnectProxy
 
         private void textBox_ServerPort_TextChanged(object sender, EventArgs e)
         {
-            if (int.Parse(textBox_ServerPort.Text) > 65535 || int.Parse(textBox_ServerPort.Text) < 0)
+            try
             {
-                MessageBox.Show("please input the number between the 0-65535,and don't use the special port(like 22,21)", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                if (int.Parse(textBox_ServerPort.Text) > 65535 || int.Parse(textBox_ServerPort.Text) < 0)
+                {
+                    MessageBox.Show("please input the number between the 0-65535,and don't use the special port(like 22,21)", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                serverPort = textBox_ServerPort.Text;
+                fSMConfiguration.serverPort = serverPort;
+                IniFileOperator.setKeyValue("serverPort", serverPort, configFileName);
             }
-            serverPort = textBox_ServerPort.Text;
-            fSMConfiguration.serverPort = serverPort;
-            IniFileOperator.setKeyValue("serverPort", serverPort, configFileName);
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            
         }
         private void button_RestartServer_Click(object sender, EventArgs e)
         {

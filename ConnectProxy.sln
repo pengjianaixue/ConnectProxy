@@ -9,10 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlChannel", "ControlCh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelnetService", "TelnetService\TelnetService.csproj", "{20A443AB-640E-48D7-9BBE-46D31658A154}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Midapex", "Midapex\Midapex.csproj", "{3143DAB8-8707-4CB6-A888-C3FF48D483EA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Midapex.Net", "Net\Midapex.Net.csproj", "{172B9F87-1896-47B4-A890-A8BE3F2F2FC8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileTransferClient", "FileTransferClient\FileTransferClient.csproj", "{5AFCA094-2904-40B8-A6DE-D7E0F33AF046}"
 EndProject
 Global
@@ -33,14 +29,6 @@ Global
 		{20A443AB-640E-48D7-9BBE-46D31658A154}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20A443AB-640E-48D7-9BBE-46D31658A154}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20A443AB-640E-48D7-9BBE-46D31658A154}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3143DAB8-8707-4CB6-A888-C3FF48D483EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3143DAB8-8707-4CB6-A888-C3FF48D483EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3143DAB8-8707-4CB6-A888-C3FF48D483EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3143DAB8-8707-4CB6-A888-C3FF48D483EA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{172B9F87-1896-47B4-A890-A8BE3F2F2FC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{172B9F87-1896-47B4-A890-A8BE3F2F2FC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{172B9F87-1896-47B4-A890-A8BE3F2F2FC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{172B9F87-1896-47B4-A890-A8BE3F2F2FC8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5AFCA094-2904-40B8-A6DE-D7E0F33AF046}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5AFCA094-2904-40B8-A6DE-D7E0F33AF046}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AFCA094-2904-40B8-A6DE-D7E0F33AF046}.Release|Any CPU.ActiveCfg = Release|Any CPU
