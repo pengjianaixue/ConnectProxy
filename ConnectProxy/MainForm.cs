@@ -105,9 +105,10 @@ namespace ConnectProxy
         {
             try
             {
-                if (int.Parse(textBox_ServerPort.Text) > 65535 || int.Parse(textBox_ServerPort.Text) < 0)
+                if (int.Parse(textBox_ServerPort.Text) > 65535 || int.Parse(textBox_ServerPort.Text) < 0 || int.Parse(textBox_ServerPort.Text) == 12001)
                 {
-                    MessageBox.Show("please input the number between the 0-65535,and don't use the special port(like 22,21)", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("please input the number between the 0-65535,and don't use the special port(like 22,21) and server reserve prot: 12001  ", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    textBox_ServerPort.Text = "11000";
                     return;
                 }
                 serverPort = textBox_ServerPort.Text;
@@ -155,6 +156,7 @@ namespace ConnectProxy
                System.Windows.Forms.MessageBoxButtons.YesNo,
                System.Windows.Forms.MessageBoxIcon.Warning)== System.Windows.Forms.DialogResult.Yes)
             {
+                fileTransferServer.stopServer();
                 notifyIcon_hide.Visible = false;   
                 this.Close();                  
                 this.Dispose();                
