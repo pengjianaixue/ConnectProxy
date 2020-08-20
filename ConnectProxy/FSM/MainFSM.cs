@@ -11,6 +11,9 @@ using ConnectProxy.FSM.FSMAction;
 
 namespace ConnectProxy
 {
+
+    
+
     class TelnetFSM
     {
         public enum States
@@ -31,34 +34,15 @@ namespace ConnectProxy
             GoBack,
             ServerOpend,
         }
-        public TelnetFSM(FSMConfiguration fsmConfiguration)
+        private void startFSM(FSMConfiguration fsmConfiguration)
         {
-            #region Sample
-
-            //builder.In(States.OnFloor)
-            //   .ExecuteOnEntry(this.AnnounceFloor)
-            //   .ExecuteOnExit(Beep)
-            //   .ExecuteOnExit(Beep) // just beep a second time
-            //   .On(Events.CloseDoor).Goto(States.DoorClosed)
-            //   .On(Events.OpenDoor).Goto(States.DoorOpen)
-            //   .On(Events.GoUp)
-            //       .If(CheckOverload).Goto(States.MovingUp)
-            //       .Otherwise().Execute(this.AnnounceOverload)
-            //   .On(Events.GoDown)
-            //       .If(CheckOverload).Goto(States.MovingDown)
-            //       .Otherwise().Execute(this.AnnounceOverload);
-            //builder.In(States.Moving)
-            //    .On(Events.Stop).Goto(States.OnFloor);
-            //proxyRunMachine.DefineHierarchyOn(States.WaitConncet);
-
-            //fSMData.elevator.AddExtension(new Appccelerate.Log4Net.StateMachineLogExtension<States, Events>("fSMData.elevator"));
-            #endregion      
             mainFSMConfiguration = fsmConfiguration;
             fSMData.tcaTSLPath = fsmConfiguration.tslPath;
             fSMData.comPortName = fsmConfiguration.defaultComPortName;
             fSMData.ruSerialPort = new RuSerialPort();
             fSMData.tCACommand = new TCAControl.TCACommandWarpper(fSMData.tcaTSLPath);
             fSMData.telnetServer = new TelnetServer();
+            proxyRunMachine = new StateMachineDefinitionBuilder<States, Events>();
             proxyRunMachine.WithInitialState(States.NeedServerOpen);
             //proxyRunMachine.DefineHierarchyOn(States.CT11Mode).WithHistoryType(HistoryType.Deep)
             proxyRunMachine.In(States.NeedServerOpen).ExecuteOnEntry(startServer).On(Events.ServerOpend).Goto(States.WaitConncet).Execute(waitForConnect);
@@ -83,20 +67,44 @@ namespace ConnectProxy
             connectedAction = new ConnectedAction(ref fSMData);
             ruModeAction = new RuModeAction(ref fSMData);
             ct11ModeAction = new CT11ModeAction(ref fSMData);
+        }
+        public TelnetFSM(FSMConfiguration fsmConfiguration)
+        {
+            #region Sample
+
+            //builder.In(States.OnFloor)
+            //   .ExecuteOnEntry(this.AnnounceFloor)
+            //   .ExecuteOnExit(Beep)
+            //   .ExecuteOnExit(Beep) // just beep a second time
+            //   .On(Events.CloseDoor).Goto(States.DoorClosed)
+            //   .On(Events.OpenDoor).Goto(States.DoorOpen)
+            //   .On(Events.GoUp)
+            //       .If(CheckOverload).Goto(States.MovingUp)
+            //       .Otherwise().Execute(this.AnnounceOverload)
+            //   .On(Events.GoDown)
+            //       .If(CheckOverload).Goto(States.MovingDown)
+            //       .Otherwise().Execute(this.AnnounceOverload);
+            //builder.In(States.Moving)
+            //    .On(Events.Stop).Goto(States.OnFloor);
+            //proxyRunMachine.DefineHierarchyOn(States.WaitConncet);
+
+            //fSMData.elevator.AddExtension(new Appccelerate.Log4Net.StateMachineLogExtension<States, Events>("fSMData.elevator"));
+            #endregion      
+            startFSM(fsmConfiguration);
+
 
         }
         public void stopFSM()
         {
+            this.fSMData.telnetServer.stopServer();
+            this.fSMData.ruSerialPort.stopForwardRecviThread();
+            this.fSMData.ruSerialPort.close();
             this.fSMData.elevator.Stop();
         }
         public void restartFSM(FSMConfiguration fsmConfiguration)
         {
-            fSMData.tcaTSLPath = fsmConfiguration.tslPath;
-            fSMData.comPortName = fsmConfiguration.defaultComPortName;
-            fSMData.telnetServer.stopServer();
             stopFSM();
-            fSMData.elevator.Start();
-
+            startFSM(fsmConfiguration);
         }
         private void connected()
         {
@@ -140,7 +148,7 @@ namespace ConnectProxy
         {
             ct11ModeAction.runAction(AppSession, stringRequestInfo);
         }
-        private StateMachineDefinitionBuilder<States, Events> proxyRunMachine = new StateMachineDefinitionBuilder<States, Events>();
+        private StateMachineDefinitionBuilder<States, Events> proxyRunMachine;
         private FSMData fSMData;
         private ConnectedAction connectedAction = null;
         private CT11ModeAction ct11ModeAction = null;
