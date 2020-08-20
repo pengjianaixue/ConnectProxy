@@ -15,6 +15,8 @@ namespace ConnectProxy.TelnetServerSim
     class TelnetAppSession : AppSession<TelnetAppSession>
     {
 
+        //public event EventHandler<> seeionClosed;
+
         public string PropmtSymbol { get; set; } = "$ ";
         public override void Send(string message)
         {
@@ -33,6 +35,11 @@ namespace ConnectProxy.TelnetServerSim
         public void sendNoNewLine(string message)
         {
             base.SocketSession.Client.SendData(System.Text.Encoding.Default.GetBytes(message));
+
+        }
+        protected override void OnSessionClosed(CloseReason reason)
+        {
+
 
         }
         protected override void HandleUnknownRequest(StringRequestInfo requestInfo)
