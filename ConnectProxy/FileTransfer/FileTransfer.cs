@@ -25,8 +25,8 @@ namespace ConnectProxy.FileTransfer
         {
             while (runFlag)
             {
-                var tcpClient = listener.AcceptTcpClient();
-                Thread recviThread = new Thread(recviFile);
+                var tcpClient =  listener.AcceptTcpClient();
+                recviThread = new Thread(recviFile);
                 recviThread.Start(tcpClient);
             }
         }
@@ -37,6 +37,8 @@ namespace ConnectProxy.FileTransfer
             string fileName = homeDir + "/";
             try
             {
+                //Task<TcpClient> tcpClientTask = (Task<TcpClient>)obj;
+                //TcpClient tcpClient = tcpClientTask.Result;
                 TcpClient tcpClient = (TcpClient)obj;
                 byte[] buffer = new byte[tcpClient.ReceiveBufferSize];
                 NetworkStream stream = tcpClient.GetStream();
@@ -50,20 +52,35 @@ namespace ConnectProxy.FileTransfer
                     else
                     {
                         string getfileName = System.Text.Encoding.Default.GetString(buffer,0, readLength);
-                        if (getfileName.EndsWith("#--"))
+                        string flag = "#--";
+                        if (getfileName.Contains(flag))
                         {
-                            fileName = fileName + getfileName.Replace("#--","");
+                            string[] splitchar = new string[] { flag };
+                            string[] recviStrSplit =  getfileName.Split(splitchar,StringSplitOptions.None);
+                            if (recviStrSplit.Length == 0)
+                            {
+                                return;
+                            }
+                            fileName = fileName + recviStrSplit[0];
                             fileStream = new FileStream(fileName, FileMode.Create);
                             isEnterFileContexet = true;
+                            if (recviStrSplit.Length==2)
+                            {
+                                fileStream.Write(System.Text.Encoding.Default.GetBytes(recviStrSplit[1]), 0, recviStrSplit[1].Length);
+                            }
                         }
                     }
                 }
                 recviIsSuccess = true;
-                fileStream.FlushAsync();
-                fileStream.Close();
+                if (fileStream != null)
+                {
+                    fileStream.FlushAsync();
+                    fileStream.Close();
+                }
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
+                System.Console.WriteLine(ex.Message);
                 recviIsSuccess = false;
                 if (fileStream != null)
                 {

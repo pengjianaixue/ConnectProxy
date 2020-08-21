@@ -21,6 +21,9 @@ namespace ConnectProxy.FSM.FSMAction
             //connectedRequestHandleAction.Add("RuCommand", ruCommandsMode);
             RuModeActionDic.Add("SendCT11Command", ct11CommandSend);
             RuModeActionDic.Add("ExitRuMode", exitRuMode);
+            RuSpecialControlActionDic.Add("InterrupterRuProcess", controlC_Action);
+            RuSpecialControlActionDic.Add("ExitRuProcess", controlD_Action);
+            RuSpecialControlActionDic.Add("SuspendRuProcess", controlD_Action);
             //serialRecviThread = new Thread(this.serialReviParameterizedThreadStart);
         }
         private void exitRuMode(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
@@ -36,6 +39,34 @@ namespace ConnectProxy.FSM.FSMAction
             ruModeFSMData.ruSerialPort.suspendForwardRecviThread();
             isRunningRuCommandMode = false;
             ruModeFSMData.tCACommand.callTCACommand(AppSession, stringRequestInfo);
+        }
+        private void controlD_Action(StringRequestInfo stringRequestInfo)
+        {
+            byte[] controlCChar = new byte[1];
+            controlCChar[0] = 0x4;
+            ruModeFSMData.ruSerialPort.send(System.Text.Encoding.Default.GetString(controlCChar));
+        }
+        private void controlZ_Action(StringRequestInfo stringRequestInfo)
+        {
+            byte[] controlCChar = new byte[1];
+            controlCChar[0] = 0x26;
+            ruModeFSMData.ruSerialPort.send(System.Text.Encoding.Default.GetString(controlCChar));
+        }
+        private void controlC_Action(StringRequestInfo stringRequestInfo)
+        {
+            byte[] controlCChar = new byte[1];
+            controlCChar[0] = 0x3;
+            ruModeFSMData.ruSerialPort.send(System.Text.Encoding.Default.GetString(controlCChar));
+        }
+        private void ruForward(StringRequestInfo stringRequestInfo)
+        {
+            if (RuSpecialControlActionDic.ContainsKey(stringRequestInfo.Key))
+            {
+                RuSpecialControlActionDic[stringRequestInfo.Key](stringRequestInfo);
+                return;
+            }
+            string ruCommand = stringRequestInfo.Key + " " + stringRequestInfo.Body;
+            ruModeFSMData.ruSerialPort.send(ruCommand);
         }
         public void runAction(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
@@ -54,8 +85,8 @@ namespace ConnectProxy.FSM.FSMAction
                 isRunningRuCommandMode = true;
                 ruModeFSMData.ruSerialPort.resumeForwardRecviThread();
             }
-            string ruCommand = stringRequestInfo.Key + " " + stringRequestInfo.Body;
-            ruModeFSMData.ruSerialPort.send(ruCommand);
+            ruForward(stringRequestInfo);
+
         }
 
         //private ParameterizedThreadStart serialRecviParamter;
@@ -64,6 +95,8 @@ namespace ConnectProxy.FSM.FSMAction
         private bool isRunningRuCommandMode = false;
         private Dictionary<string, Action<TelnetAppSession, StringRequestInfo>> RuModeActionDic
             = new Dictionary<string, Action<TelnetAppSession, StringRequestInfo>>();
+        private Dictionary<string, Action<StringRequestInfo>> RuSpecialControlActionDic
+            = new Dictionary<string, Action<StringRequestInfo>>();
         private FSMData ruModeFSMData;
     }
 }
