@@ -22,6 +22,10 @@ namespace ConnectProxy.TelnetServerSim
         {
             base.SocketSession.Client.SendData(System.Text.Encoding.Default.GetBytes(message + System.Environment.NewLine));
         }
+        public void baseSend(string message)
+        {
+            base.Send(message);
+        }
         public void sendPropmt()
         {
             base.SocketSession.Client.SendData(System.Text.Encoding.Default.GetBytes(PropmtSymbol));

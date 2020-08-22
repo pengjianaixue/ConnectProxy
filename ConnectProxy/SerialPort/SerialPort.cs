@@ -110,7 +110,7 @@ namespace ConnectProxy.ComPortControl
         {
             try
             {
-                ruSerialPort.Write(cmd);
+                ruSerialPort.Write(cmd+"\r");
                 return true;
             }
             catch (System.Exception)
@@ -157,10 +157,22 @@ namespace ConnectProxy.ComPortControl
             string recviMsg = "";
             while (recviThreadRunControl)
             {
+                //System.Environment.NewLine
                 recviMsg = read();
-                telnetAppSession.sendNoNewLine(recviMsg);
+                System.Console.WriteLine(recviMsg);
+                if (recviMsg.Length!=0)
+                {
+                    telnetAppSession.sendNoNewLine(recviMsg.Replace("\r\n","\n"));
+                }                
+                Thread.Sleep(1);
             }
         }
+        private void RuSerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            //ruSerialPort.DataReceived += RuSerialPort_DataReceived;
+            throw new NotImplementedException();
+        }
+
         private string autoDetectPropmt()
         {
             string propmt = "";

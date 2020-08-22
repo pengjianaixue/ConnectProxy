@@ -65,7 +65,16 @@ namespace ConnectProxy.FSM.FSMAction
                 RuSpecialControlActionDic[stringRequestInfo.Key](stringRequestInfo);
                 return;
             }
-            string ruCommand = stringRequestInfo.Key + " " + stringRequestInfo.Body;
+            string ruCommand = "";
+
+            if (stringRequestInfo.GetFirstParam().Length == 0)
+            {
+                ruCommand = stringRequestInfo.Key;
+            }
+            else
+            {
+                ruCommand = stringRequestInfo.Key + " " + stringRequestInfo.Body;
+            }
             ruModeFSMData.ruSerialPort.send(ruCommand);
         }
         public void runAction(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
