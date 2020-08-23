@@ -5,6 +5,8 @@ using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Protocol;
 using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketService;
+using ConnectProxy.UserSession;
+using ConnectProxy.FSM;
 
 namespace ConnectProxy.TelnetServerSim
 {
@@ -12,10 +14,14 @@ namespace ConnectProxy.TelnetServerSim
 
     using ModeDic = Dictionary<string, Dictionary<string, Action<TelnetAppSession, StringRequestInfo>>>;
     using ActionDic = Dictionary<string, Action<TelnetAppSession, StringRequestInfo>>;
+    //class TelnetRequestInfo : RequestInfo<string>
+    //{
+
+    //}
     class TelnetAppSession : AppSession<TelnetAppSession>
     {
 
-        //public event EventHandler<> seeionClosed;
+        public event EventHandler<string> seeionClosed;
 
         public string PropmtSymbol { get; set; } = "$ ";
         public override void Send(string message)
@@ -41,15 +47,9 @@ namespace ConnectProxy.TelnetServerSim
             base.SocketSession.Client.SendData(System.Text.Encoding.Default.GetBytes(message));
 
         }
-        protected override void OnSessionClosed(CloseReason reason)
-        {
-
-
-        }
         protected override void HandleUnknownRequest(StringRequestInfo requestInfo)
         {
             System.Console.WriteLine(requestInfo.Key);
-
         }
     }
     class TelnetAppServer : AppServer<TelnetAppSession>
@@ -76,11 +76,13 @@ namespace ConnectProxy.TelnetServerSim
     class TelnetServer
     {
 
-        public TelnetServer()
+        public TelnetServer(FSMConfiguration fsmConfiguration)
         {
+            _fsmConfiguration = fsmConfiguration;
             baseActionDic.Add("", sendPromt);
             baseActionDic.Add("help", printHelp);
             baseActionDic.Add("Exit", sessionClose);
+            startServer(_fsmConfiguration.serverPort);
         }
         public bool startServer(string port)
         {
@@ -88,66 +90,80 @@ namespace ConnectProxy.TelnetServerSim
             {
                 return false;
             }
-            if (!telnetServer.Start())
-            {
-                return false;
-            }
+            telnetServer.Start();
             telnetServer.NewSessionConnected += new SessionHandler<TelnetAppSession>(appServer_NewSessionConnected);
+            telnetServer.NewRequestReceived += appServer_NewRequestReceived;
             telnetServer.SessionClosed += TelnetServer_SessionClosed;
-            resetRequsetAction();
+            //resetRequsetAction();
             return true;
         }
 
         private void TelnetServer_SessionClosed(TelnetAppSession session, CloseReason value)
         {
-            isConnect = false;
+            if (sessionDic.ContainsKey(session.SessionID))
+            {
+                sessionDic[session.SessionID].stopSession();
+                sessionDic.Remove(session.SessionID);
+            }
         }
-        //public event EventHandler<string> modeChangInfo;
+        public void restartServer()
+        {
+            telnetServer.Stop();
+        }
         public void stopServer()
         {
             telnetServer.Stop();
         }
         private void appServer_NewSessionConnected(TelnetAppSession session)
         {
-            session.Send(string.Format("Welcome to  digital brain telnet server\r\nServer Info: Address: {0},Port: {1}\r\nTime: {2}",
-                session.LocalEndPoint.Address.MapToIPv4(), session.Config.Port, session.StartTime.ToString()));
-            isConnect = true;
-        }
-        public void resetRequsetAction()
-        {
-            telnetServer.NewRequestReceived += new RequestHandler<TelnetAppSession, StringRequestInfo>(appServer_NewRequestReceived);
-            RequsetActionList.Add(appServer_NewRequestReceived);
+            session.sendNoNewLine(string.Format("Welcome to digital brain telnet server{0}Server Info: Address: {1},Port: {2}{3}Time: {4}{5}",
+                System.Environment.NewLine, session.LocalEndPoint.Address.MapToIPv4(), session.Config.Port, System.Environment.NewLine,
+                session.StartTime.ToString(), System.Environment.NewLine + session.PropmtSymbol));
+            ProxyUserSession proxyUserSession = new ProxyUserSession(_fsmConfiguration);
+            sessionDic.Add(session.SessionID, proxyUserSession);
 
         }
-        public void registerRequsetAction(RequestHandler<TelnetAppSession, StringRequestInfo> requestHandle)
-        {
-            //telnetServer.SetupCommands()
-            foreach (var item in RequsetActionList)
-            {
-                telnetServer.NewRequestReceived -= item;
-            }
-            RequsetActionList.Clear();
-            RequsetActionList.Add(requestHandle);
-            telnetServer.NewRequestReceived += requestHandle;
+        //public void resetRequsetAction()
+        //{
+        //    telnetServer.NewRequestReceived += new RequestHandler<TelnetAppSession, StringRequestInfo>(appServer_NewRequestReceived);
+        //    RequsetActionList.Add(appServer_NewRequestReceived);
 
-        }
-        public void registerAction(string actionName, Action<TelnetAppSession, StringRequestInfo> actionFunction, string ModeName = "Base")
-        {
-            serverAction.Add(actionName, actionFunction);
-        }
-        public ActionDic serverAction
-        {
-            get;
-            set;
-        }
-        public bool isConnect {get;set;}
+        //}
+        //public void registerRequsetAction(RequestHandler<TelnetAppSession, StringRequestInfo> requestHandle)
+        //{
+        //    //telnetServer.SetupCommands()
+        //    foreach (var item in RequsetActionList)
+        //    {
+        //        telnetServer.NewRequestReceived -= item;
+        //    }
+        //    RequsetActionList.Clear();
+        //    RequsetActionList.Add(requestHandle);
+        //    telnetServer.NewRequestReceived += requestHandle;
+
+        //}
+        //public void registerAction(string actionName, Action<TelnetAppSession, StringRequestInfo> actionFunction, string ModeName = "Base")
+        //{
+        //    serverAction.Add(actionName, actionFunction);
+        //}
+        //public ActionDic serverAction
+        //{
+        //    get;
+        //    set;
+        //}
         private void appServer_NewRequestReceived(TelnetAppSession session, StringRequestInfo requestInfo)
         {
-            if (baseActionDic.ContainsKey(requestInfo.Key))
+            if (sessionDic.ContainsKey(session.SessionID))
             {
-                baseActionDic[requestInfo.Key](session, requestInfo);
+                sessionDic[session.SessionID].SessionRequsetHandle(session, requestInfo);
             }
         }
+        public void updateFSMConfiguration(FSMConfiguration fsmConfiguration)
+        {
+            _fsmConfiguration = fsmConfiguration;
+        }
+
+        //public delegate void undateFSMConfiguration();
+
         #region BaseCommand
         private void sendPromt(TelnetAppSession session, StringRequestInfo requestInfo)
         {
@@ -169,9 +185,13 @@ namespace ConnectProxy.TelnetServerSim
             session.Close();
         }
         #endregion
+        public bool isConnect { get; set; }
+        //public event EventHandler<string> clientSeeionClosed;
         private List<RequestHandler<TelnetAppSession, StringRequestInfo>> RequsetActionList = new List<RequestHandler<TelnetAppSession, StringRequestInfo>>();
         private ModeDic modeDic = new ModeDic();
         private ActionDic baseActionDic = new ActionDic();
         private TelnetAppServer telnetServer = new TelnetAppServer();
+        private Dictionary<string, ProxyUserSession> sessionDic = new Dictionary<string, ProxyUserSession>();
+        private FSMConfiguration _fsmConfiguration;
     }
 }

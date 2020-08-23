@@ -318,6 +318,7 @@
     <Compile Include="TCAControl\TCACommandWarpper.cs" />
     <Compile Include="TCAControl\TCALoader.cs" />
     <Compile Include="TelnetServerSim\TelnetServer.cs" />
+    <Compile Include="UserSession\UserSession.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

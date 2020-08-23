@@ -16,7 +16,6 @@ namespace ConnectProxy.FSM
     struct FSMData
     {
         public ActiveStateMachine<States, Events> elevator;
-        public TelnetServer telnetServer;
         public TCACommandWarpper tCACommand;
         public RuSerialPort ruSerialPort;
         public string tcaTSLPath ;

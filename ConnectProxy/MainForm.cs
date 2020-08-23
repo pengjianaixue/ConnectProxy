@@ -14,6 +14,7 @@ using System.IO;
 using ConnectProxy.ConfigLoad;
 using ConnectProxy.FSM;
 using ConnectProxy.FileTransfer;
+using ConnectProxy.TelnetServerSim;
 
 namespace ConnectProxy
 {
@@ -31,25 +32,21 @@ namespace ConnectProxy
             {
                 tcaTSLsetPath = IniFileOperator.getKeyValue("tslPath", "", configFileName);
                 defaultComportNmae = IniFileOperator.getKeyValue("defaultComPortName", "", configFileName);
-                serverPort= IniFileOperator.getKeyValue("serverPort", "", configFileName);
-                unsafe
-                {
-                    textBox_TCATSLPath.Text = tcaTSLsetPath;
-                    textBox_ServerPort.Text = serverPort;
-                    comboBox_ComportList.Text = defaultComportNmae;
-                    fSMConfiguration.tslPath = tcaTSLsetPath;
-                    fSMConfiguration.defaultComPortName = defaultComportNmae;
-                    fSMConfiguration.serverPort = serverPort;
-                    telnetFSM = new TelnetFSM(fSMConfiguration);
-                }
-                
+                serverPort = IniFileOperator.getKeyValue("serverPort", "", configFileName);
+                textBox_TCATSLPath.Text = tcaTSLsetPath;
+                textBox_ServerPort.Text = serverPort;
+                comboBox_ComportList.Text = defaultComportNmae;
+                fSMConfiguration.tslPath = tcaTSLsetPath;
+                fSMConfiguration.defaultComPortName = defaultComportNmae;
+                fSMConfiguration.serverPort = serverPort;
+                telnetServer = new TelnetServer(fSMConfiguration);
             }
             else
             {
                 MessageBox.Show("Can not load the configuration file, please configure the infomation and restart the server !",
                     "configuration load error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 textBox_ServerPort.Text = "11000";
-                IniFileOperator.setKeyValue(serverPort, "11000", configFileName);
+                IniFileOperator.setKeyValue("serverPort", "11000", configFileName);
                 comboBox_ComportList.DataSource = validComportList;
             }
         }
@@ -76,6 +73,10 @@ namespace ConnectProxy
             {
                 tcaTSLsetPath = tslPath;
                 fSMConfiguration.tslPath = tcaTSLsetPath;
+                if (telnetServer != null)
+                {
+                    telnetServer.updateFSMConfiguration(fSMConfiguration);
+                }
                 IniFileOperator.setKeyValue("tslPath", tcaTSLsetPath, configFileName);
             }
             else if (tslPath.Length == 0)
@@ -98,6 +99,10 @@ namespace ConnectProxy
 
             defaultComportNmae = comboBox_ComportList.SelectedValue.ToString();
             fSMConfiguration.defaultComPortName = defaultComportNmae;
+            if (telnetServer != null)
+            {
+                telnetServer.updateFSMConfiguration(fSMConfiguration);
+            }
             IniFileOperator.setKeyValue("defaultComPortName", defaultComportNmae, configFileName);
         }
 
@@ -113,33 +118,37 @@ namespace ConnectProxy
                 }
                 serverPort = textBox_ServerPort.Text;
                 fSMConfiguration.serverPort = serverPort;
+                if (telnetServer != null)
+                {
+                    telnetServer.updateFSMConfiguration(fSMConfiguration);
+                }
                 IniFileOperator.setKeyValue("serverPort", serverPort, configFileName);
             }
             catch (System.Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            
+
         }
         private void button_RestartServer_Click(object sender, EventArgs e)
         {
-            if (telnetFSM == null)
+            if (telnetServer == null)
             {
-                telnetFSM = new TelnetFSM(fSMConfiguration);
+                telnetServer = new TelnetServer(fSMConfiguration);
             }
             else
             {
-                telnetFSM.restartFSM(fSMConfiguration);
+                telnetServer.restartServer();
             }
 
         }
         public string tcaTSLsetPath { get; private set; } = null;
         public string[] validComportList = null;
-        public  string  defaultComportNmae = null;
+        public string defaultComportNmae = null;
         //private LmcFtpServer lmcFtpServer = new LmcFtpServer();
         private string serverPort = "";
         private string configFileName = "./config.ini";
-        private TelnetFSM telnetFSM = null;
+        private TelnetServer telnetServer = null;
         private FSMConfiguration fSMConfiguration = new FSMConfiguration();
         private FileTransferServer fileTransferServer = new FileTransferServer();
         private void showToolStripMenuItem_Click(object sender, EventArgs e)
@@ -154,13 +163,13 @@ namespace ConnectProxy
         {
             if (MessageBox.Show("Are you sure to close the Server?", "Confirm",
                System.Windows.Forms.MessageBoxButtons.YesNo,
-               System.Windows.Forms.MessageBoxIcon.Warning)== System.Windows.Forms.DialogResult.Yes)
+               System.Windows.Forms.MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
             {
                 fileTransferServer.stopServer();
-                notifyIcon_hide.Visible = false;   
-                this.Close();                  
-                this.Dispose();                
-                Application.Exit();            
+                notifyIcon_hide.Visible = false;
+                this.Close();
+                this.Dispose();
+                Application.Exit();
             }
 
         }
@@ -168,7 +177,7 @@ namespace ConnectProxy
 
         private void notifyIcon_hide_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            this.Visible = true;                  
+            this.Visible = true;
             this.WindowState = FormWindowState.Normal;
             this.notifyIcon_hide.Visible = true;
         }
@@ -177,8 +186,8 @@ namespace ConnectProxy
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
-                e.Cancel = true;           
-                this.Hide();               
+                e.Cancel = true;
+                this.Hide();
             }
         }
     }
