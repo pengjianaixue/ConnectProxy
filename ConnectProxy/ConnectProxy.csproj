@@ -41,6 +41,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Debug\ConnectProxy.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -66,6 +67,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Proxy.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>ConnectProxy.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Acr.Cache, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">

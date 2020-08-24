@@ -7,6 +7,7 @@ using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketService;
 using ConnectProxy.UserSession;
 using ConnectProxy.FSM;
+using System.Threading.Tasks;
 
 namespace ConnectProxy.TelnetServerSim
 {
@@ -86,6 +87,7 @@ namespace ConnectProxy.TelnetServerSim
         }
         public bool startServer(string port)
         {
+            telnetServer = new TelnetAppServer();
             if (!telnetServer.Setup(port.ToInt32()))
             {
                 return false;
@@ -108,7 +110,12 @@ namespace ConnectProxy.TelnetServerSim
         }
         public void restartServer()
         {
+            foreach (var item in sessionDic)
+            {
+                item.Value.stopSession();
+            }
             telnetServer.Stop();
+            startServer(_fsmConfiguration.serverPort);
         }
         public void stopServer()
         {
@@ -152,10 +159,22 @@ namespace ConnectProxy.TelnetServerSim
         //}
         private void appServer_NewRequestReceived(TelnetAppSession session, StringRequestInfo requestInfo)
         {
+
+            #region async
+            //Task.Run(() =>
+            //{
+            //    if (sessionDic.ContainsKey(session.SessionID))
+            //    {
+            //        sessionDic[session.SessionID].SessionRequsetHandle(session, requestInfo);
+            //    }
+            //});
+            #endregion
+            //TODO  maybe for  preformance reason need make it async Run
             if (sessionDic.ContainsKey(session.SessionID))
             {
                 sessionDic[session.SessionID].SessionRequsetHandle(session, requestInfo);
             }
+            
         }
         public void updateFSMConfiguration(FSMConfiguration fsmConfiguration)
         {
@@ -190,7 +209,7 @@ namespace ConnectProxy.TelnetServerSim
         private List<RequestHandler<TelnetAppSession, StringRequestInfo>> RequsetActionList = new List<RequestHandler<TelnetAppSession, StringRequestInfo>>();
         private ModeDic modeDic = new ModeDic();
         private ActionDic baseActionDic = new ActionDic();
-        private TelnetAppServer telnetServer = new TelnetAppServer();
+        private TelnetAppServer telnetServer ;
         private Dictionary<string, ProxyUserSession> sessionDic = new Dictionary<string, ProxyUserSession>();
         private FSMConfiguration _fsmConfiguration;
     }

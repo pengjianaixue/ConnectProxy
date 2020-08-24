@@ -110,7 +110,7 @@ namespace ConnectProxy.ComPortControl
         {
             try
             {
-                ruSerialPort.Write(cmd+"\r");
+                ruSerialPort.Write(cmd + Char.ConvertFromUtf32(13));
                 return true;
             }
             catch (System.Exception)
@@ -162,7 +162,8 @@ namespace ConnectProxy.ComPortControl
                 System.Console.WriteLine(recviMsg);
                 if (recviMsg.Length!=0)
                 {
-                    telnetAppSession.sendNoNewLine(recviMsg.Replace("\r\n","\n"));
+                    string SendStr = recviMsg.Replace("\r\n", System.Environment.NewLine);
+                    telnetAppSession.sendNoNewLine(SendStr);
                 }                
                 Thread.Sleep(1);
             }

@@ -23,7 +23,7 @@ namespace ConnectProxy.FSM.FSMAction
             RuModeActionDic.Add("ExitRuMode", exitRuMode);
             RuSpecialControlActionDic.Add("InterrupterRuProcess", controlC_Action);
             RuSpecialControlActionDic.Add("ExitRuProcess", controlD_Action);
-            RuSpecialControlActionDic.Add("SuspendRuProcess", controlD_Action);
+            RuSpecialControlActionDic.Add("SuspendRuProcess", controlZ_Action);
             //serialRecviThread = new Thread(this.serialReviParameterizedThreadStart);
         }
         private void exitRuMode(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)

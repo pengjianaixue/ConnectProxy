@@ -80,6 +80,8 @@ namespace ConnectProxy.TCAControl
                 if (!tCAControl.startTCA(runTimeError, "localhost", tslPath))
                 {
                     AppSession.sendWithAppendPropmt("open TCA fail:" + runTimeError.Errordescription);
+                    tCAisOpen = false;
+                    return;
                 }
                 tCAisOpen = true;
             }
@@ -90,13 +92,14 @@ namespace ConnectProxy.TCAControl
 
         }
         
-        public void stopTCA(RunTimeError error)
+        public void stopTCA()
         {
-            //RumaControlClientFactory.StopAllTools();
+            RunTimeError error = new RunTimeError();
+            tCAControl.stopTCA(error);
         }
         public string getTCAControlLog()
         {
-            return null;
+            return "";
         }
         // error How to transfer lmc to lab pc
         public void loadLMC(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
@@ -114,7 +117,9 @@ namespace ConnectProxy.TCAControl
                 AppSession.sendNoNewLine(string.Format("Load LMC fail, The special LMC file: {0} is not exist on server local PC", 
                     System.IO.Path.GetFileName(stringRequestInfo.GetFirstParam())));
             }
-            if (!tCAControl.loadLMC(error, fileName, getParameter(stringRequestInfo, 2), getParameter(stringRequestInfo, 3)))
+            string CpriPort = getParameter(stringRequestInfo, 1);
+            string IsRestart = getParameter(stringRequestInfo, 2);
+            if (!tCAControl.loadLMC(error, fileName, CpriPort, IsRestart))
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
             }
@@ -131,7 +136,7 @@ namespace ConnectProxy.TCAControl
                 return;
             }
             RunTimeError error = new RunTimeError();
-            tCAControl.StartPlayBack(error,getParameter(stringRequestInfo, 1), getParameter(stringRequestInfo, 2));
+            tCAControl.StartPlayBack(error,getParameter(stringRequestInfo, 0), getParameter(stringRequestInfo, 1));
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -148,7 +153,7 @@ namespace ConnectProxy.TCAControl
                 return;
             }
             RunTimeError error = new RunTimeError();
-            tCAControl.StopPlayBack(error,getParameter(stringRequestInfo, 1), getParameter(stringRequestInfo, 2));
+            tCAControl.StopPlayBack(error,getParameter(stringRequestInfo, 0), getParameter(stringRequestInfo,1));
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -164,7 +169,7 @@ namespace ConnectProxy.TCAControl
                 return;
             }
             RunTimeError error = new RunTimeError();
-            tCAControl.StartCapture(error, getParameter(stringRequestInfo, 1), getParameter(stringRequestInfo, 2));
+            tCAControl.StartCapture(error, getParameter(stringRequestInfo,0), getParameter(stringRequestInfo, 1));
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -180,7 +185,7 @@ namespace ConnectProxy.TCAControl
                 return;
             }
             RunTimeError error = new RunTimeError();
-            tCAControl.StopCapture(error, getParameter(stringRequestInfo, 1), getParameter(stringRequestInfo, 2));
+            tCAControl.StopCapture(error, getParameter(stringRequestInfo, 0), getParameter(stringRequestInfo, 1));
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -194,7 +199,7 @@ namespace ConnectProxy.TCAControl
                 return;
             }
             RunTimeError error = new RunTimeError();
-            tCAControl.DeleteAllCarriers(error, getParameter(stringRequestInfo, 1), getParameter(stringRequestInfo, 2));
+            tCAControl.DeleteAllCarriers(error, getParameter(stringRequestInfo, 0), getParameter(stringRequestInfo, 1));
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -209,8 +214,8 @@ namespace ConnectProxy.TCAControl
                 return;
             }
             RunTimeError error = new RunTimeError();
-            tCAControl.DeleteCarrier(error, getParameter(stringRequestInfo, 1), 
-                getParameter(stringRequestInfo, 2), getParameter(stringRequestInfo, 3));
+            tCAControl.DeleteCarrier(error, getParameter(stringRequestInfo, 0), 
+                getParameter(stringRequestInfo, 1), getParameter(stringRequestInfo, 2));
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -227,8 +232,8 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.AddCarrier(error, paramMeter[1],
-                paramMeter[2], paramMeter[3], paramMeter[4], paramMeter[5], paramMeter[6]);
+            tCAControl.AddCarrier(error, paramMeter[0],paramMeter[1],
+                paramMeter[2], paramMeter[3], paramMeter[4], paramMeter[5]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -244,8 +249,8 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.SetAxcContainerFormat(error, paramMeter[1],
-                paramMeter[2], paramMeter[3]);
+            tCAControl.SetAxcContainerFormat(error, paramMeter[0], paramMeter[1],
+                paramMeter[2]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -261,8 +266,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            string getdata  = tCAControl.GetAxcContainerFormat(error, paramMeter[1],
-                paramMeter[2]);
+            string getdata  = tCAControl.GetAxcContainerFormat(error, paramMeter[0], paramMeter[1]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -281,8 +285,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            string getdata = tCAControl.CpriGetFsInfo_RX(error, paramMeter[1],
-                paramMeter[2]);
+            string getdata = tCAControl.CpriGetFsInfo_RX(error, paramMeter[0], paramMeter[1]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -301,8 +304,8 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            string getdata = tCAControl.GetCarrierConfig(error, paramMeter[1],
-                paramMeter[2],paramMeter[3]);
+            string getdata = tCAControl.GetCarrierConfig(error, paramMeter[0], paramMeter[1],
+                paramMeter[2]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -321,10 +324,10 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.SetCarrierConfig(error, paramMeter[1],
+            tCAControl.SetCarrierConfig(error, paramMeter[0], paramMeter[1],
                 paramMeter[2], paramMeter[3], paramMeter[4], paramMeter[5], paramMeter[6],
                 paramMeter[7], paramMeter[8], paramMeter[9], paramMeter[10], 
-                paramMeter[11], paramMeter[12], paramMeter[13]);
+                paramMeter[11], paramMeter[12]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -343,8 +346,8 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.SetCpriConfig(error, paramMeter[1],
-                paramMeter[2], paramMeter[3]);
+            tCAControl.SetCpriConfig(error, paramMeter[0], paramMeter[1],
+                paramMeter[2]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -380,7 +383,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.SetupClockTriggerSource(error, paramMeter[1],paramMeter[2]);
+            tCAControl.SetupClockTriggerSource(error, paramMeter[0], paramMeter[1]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -397,7 +400,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.SetCpriTriggerSource(error, paramMeter[1], paramMeter[2], paramMeter[3]);
+            tCAControl.SetCpriTriggerSource(error, paramMeter[0], paramMeter[1], paramMeter[2]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -415,7 +418,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.IQFileClearFile(error, paramMeter[1], paramMeter[2]);
+            tCAControl.IQFileClearFile(error, paramMeter[0], paramMeter[1]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -432,7 +435,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.IQFileAdd(error, paramMeter[1], paramMeter[2]);
+            tCAControl.IQFileAdd(error, paramMeter[0], paramMeter[1]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -449,7 +452,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.IQFileSetCurrentByName(error, paramMeter[1], paramMeter[2]);
+            tCAControl.IQFileSetCurrentByName(error, paramMeter[0], paramMeter[1]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -469,7 +472,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            string data =  tCAControl.IQFileGetCurrent(error, paramMeter[1]);
+            string data =  tCAControl.IQFileGetCurrent(error, paramMeter[0]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -489,7 +492,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            string[] data = tCAControl.IQFilesGetList(error, paramMeter[1]);
+            string[] data = tCAControl.IQFilesGetList(error, paramMeter[0]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -512,7 +515,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.SetIQFile(error, paramMeter[1], paramMeter[2]);
+            tCAControl.SetIQFile(error, paramMeter[0], paramMeter[1]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -529,7 +532,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.CpcFileClearFile(error, paramMeter[1], paramMeter[2]);
+            tCAControl.CpcFileClearFile(error, paramMeter[0], paramMeter[1]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -547,7 +550,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.CpcFilesClearAll(error, paramMeter[1]);
+            tCAControl.CpcFilesClearAll(error, paramMeter[0]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -566,7 +569,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.CpcFileAdd(error, paramMeter[1], paramMeter[2]);
+            tCAControl.CpcFileAdd(error, paramMeter[0], paramMeter[1]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -584,7 +587,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            string data =  tCAControl.CpcFileGetCurrent(error, paramMeter[1]);
+            string data =  tCAControl.CpcFileGetCurrent(error, paramMeter[0]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -601,7 +604,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.CpcFileSetCurrent(error, paramMeter[1],paramMeter[2]);
+            tCAControl.CpcFileSetCurrent(error, paramMeter[0],paramMeter[1]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -619,7 +622,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.CpcFileSetLoopLength(error, paramMeter[1], paramMeter[2], paramMeter[3]);
+            tCAControl.CpcFileSetLoopLength(error, paramMeter[0], paramMeter[1], paramMeter[2]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -636,7 +639,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            string data =  tCAControl.CpcListFiles(error, paramMeter[1]);
+            string data =  tCAControl.CpcListFiles(error, paramMeter[0]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -653,7 +656,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.CpcSetAxcMode(error, paramMeter[1],paramMeter[2]);
+            tCAControl.CpcSetAxcMode(error, paramMeter[0],paramMeter[1]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
@@ -670,7 +673,7 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string[] paramMeter = stringRequestInfo.Parameters;
-            tCAControl.SetCPCfile(error, paramMeter[1], paramMeter[2]);
+            tCAControl.SetCPCfile(error, paramMeter[0], paramMeter[1]);
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);

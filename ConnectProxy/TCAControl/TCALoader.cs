@@ -40,45 +40,49 @@ namespace ConnectProxy.TCALoader
         }
         // Interface
         #region Interface
+        //Note: If the user PC user the Global Proxy(IE Setup), this Function will fail
         public bool startTCA(RunTimeError error, string addresss, string exePath = "")
         {
             try
             {
-                tas = new ApplicationControl(addresss);
-                string[] tsls = tas.GetTslList();
-                if (tsls.Length == 0)
-                {
-                    tas.StartTsl();
-                    tsls = tas.GetTslList();
-                    if (tsls.Length == 0)
-                    {
-                        error.Errordescription = "Can not start TCA TSL";
-                        return false;
-                    }
-                }
-                tsl = new TslControlClient(tsls[0]);
-                string[] hwSnrs = tsl.GetHws();
-                if (hwSnrs.Length == 0)
-                {
-                    error.Errordescription = "Can not get HW link";
-                    return false;
-                }
-                string[] uris = tsl.GetServiceList(ToolType.ID_RUMA);
-                string toolUri;
-                if (uris.Length == 1)
-                {
-                    toolUri = uris[0];
-                }
-                else if (uris.Length > 1)
-                {
-                    toolUri = uris[uris.Length - 1];
-                }
-                else
-                {
-                    toolUri = tsl.StartService(ToolType.ID_RUMA, hwSnrs[0]);
-                }
+                #region ResvererCode
+                //tas = new ApplicationControl(addresss);
+                //string[] tsls = tas.GetTslList();
+                //if (tsls.Length == 0)
+                //{
+                //    tas.StartTsl();
+                //    tsls = tas.GetTslList();
+                //    if (tsls.Length == 0)
+                //    {
+                //        error.Errordescription = "Can not start TCA TSL";
+                //        return false;
+                //    }
+                //}
+                //tsl = new TslControlClient(tsls[0]);
+                //string[] hwSnrs = tsl.GetHws();
+                //if (hwSnrs.Length == 0)
+                //{
+                //    error.Errordescription = "Can not get HW link";
+                //    return false;
+                //}
+                //string[] uris = tsl.GetServiceList(ToolType.ID_RUMA);
+                //string toolUri = "";
+                //if (uris.Length == 1)
+                //{
+                //    toolUri = uris[0];
+                //}
+                //else if (uris.Length > 1)
+                //{
+                //    toolUri = uris[uris.Length - 1];
+                //}
+                //else
+                //{
+                //    toolUri = tsl.StartService(ToolType.ID_RUMA, hwSnrs[0]);
+                //}
                 //error CpriPort mapping to  Port number
-                this.rumaClient = RumaControlClientFactory.Create(toolUri);
+                //this.rumaClient = RumaControlClientFactory.Create(toolUri);
+                #endregion
+                this.rumaClient = Tiger.Ruma.RumaControlClientFactory.CreateDefault();
                 this.rCpriDataFlow = this.rumaClient.CpriDataFlow;
                 this.rCarrierConfig = this.rumaClient.CarrierConfig;
                 this.rCpriConfig = this.rumaClient.CpriConfig;
@@ -91,23 +95,32 @@ namespace ConnectProxy.TCALoader
             {
                 WriteTraceText(error,"StartPlayBack" + e.Message);
                 error.Errordescription = "startTCA error : " + e.Message;
+                return false;
             }
             return true;
         }
         public void stopTCA(RunTimeError error)
         {
-            //RumaControlClientFactory.StopAllTools();
+            if (rumaClient!=null)
+            {
+                RumaControlClientFactory.StopTool(rumaClient);
+            }
+            else
+            {
+                RumaControlClientFactory.StopDefaultTool();
+            }
+            
         }
         public string getTCAControlLog()
         {
             return null;
         }
         // error How to transfer lmc to lab pc
-        public bool loadLMC(RunTimeError error, string lmcPath, string cpriPort, string physPos = "1", string restart = "true")
+        public bool loadLMC(RunTimeError error, string lmcPath, string cpriPort, string restart = "1",string physPos = "1")
         {
             try
             {
-                return Convert.ToBoolean(rRULoader.UpgradeRU(lmcPath, cpriPortMapping[cpriPort], Convert.ToUInt64(physPos), boolDic[restart]));
+                return Convert.ToBoolean(rRULoader.UpgradeRU(lmcPath, cpriPortMapping[cpriPort], Convert.ToUInt64(physPos), NumberboolDic[restart]));
             }
             catch (Exception e)
             {
@@ -734,6 +747,11 @@ namespace ConnectProxy.TCALoader
             {"CDMA", Technology.CDMA},
             {"WCDMA_5_BIT", Technology.WCDMA_5_BIT},
             {"WCDMA_7_BIT", Technology.WCDMA_7_BIT}
+        };
+        public static readonly Dictionary<string, bool> NumberboolDic = new Dictionary<string, bool>
+        {
+            {"1", true},
+            {"0", false}
         };
         public static readonly Dictionary<string, bool> boolDic = new Dictionary<string, bool>
         {
