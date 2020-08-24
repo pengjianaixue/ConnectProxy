@@ -130,6 +130,23 @@ namespace ConnectProxy.TCAControl
             }
 
         }
+        public void restartRuToSlot(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
+        {
+            if (getParameterNumber(stringRequestInfo) != 3)
+            {
+                sendParameterError(AppSession);
+                return;
+            }
+            RunTimeError error = new RunTimeError();
+            if (!tCAControl.restartRuToSlot(error, getParameter(stringRequestInfo, 0), getParameter(stringRequestInfo, 1), getParameter(stringRequestInfo, 2)))
+            {
+
+                AppSession.sendWithAppendPropmt("restartRuToSlot fail " + error.Errordescription);
+            }
+            
+           
+
+        }
         //rumaster start
         public void StartPlayBack(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {

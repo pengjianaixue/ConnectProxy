@@ -123,12 +123,46 @@ namespace ConnectProxy.TCALoader
         {
             return null;
         }
-        // error How to transfer lmc to lab pc
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="error"></param>
+        /// <param name="lmcPath"></param>
+        /// <param name="cpriPort"></param>
+        /// <param name="restart"></param>
+        /// <param name="physPos"></param>
+        /// <returns></returns>
         public bool loadLMC(RunTimeError error, string lmcPath, string cpriPort, string restart = "1",string physPos = "1")
         {
             try
             {
-                return Convert.ToBoolean(rRULoader.UpgradeRU(lmcPath, cpriPortMapping[cpriPort], Convert.ToUInt64(physPos), NumberboolDic[restart]));
+                if (Convert.ToBoolean(rRULoader.UpgradeRU(lmcPath, cpriPortMapping[cpriPort], Convert.ToUInt64(physPos), NumberboolDic[restart])))
+                {
+                    return restartRuToSlot(error,lmcPath, cpriPort, physPos);
+                }
+                WriteTraceText(error, string.Format("Load LMC:{0} Fail : " , lmcPath));
+                return false;
+            }
+            catch (Exception e)
+            {
+                WriteTraceText(error, "Load LMC error : " + e.Message);
+                return false;
+            }
+
+        }
+        /// <summary>
+        /// restartRuToSlot
+        /// </summary>
+        /// <param name="error"> RunTimeError  </param>
+        /// <param name="radioPID">  CXP9013268%15_R82KM </param>
+        /// <param name="cpriPort"> 1A </param>
+        /// <param name="physPos"> 1 </param>
+        /// <returns></returns>
+        public bool restartRuToSlot(RunTimeError error, string radioPID, string cpriPort, string physPos = "1")
+        {
+            try
+            {
+                return Convert.ToBoolean(rumaClient.OoM.RULoader.RestartRU(radioPID, cpriPortMapping[cpriPort], Convert.ToUInt64(physPos)));
             }
             catch (Exception e)
             {
