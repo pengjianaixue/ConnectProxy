@@ -78,15 +78,6 @@
     <Reference Include="Appccelerate.StateMachine, Version=5.0.0.0, Culture=neutral, PublicKeyToken=917bca444d1f2b4c, processorArchitecture=MSIL">
       <HintPath>..\packages\Appccelerate.StateMachine.5.1.0\lib\netstandard1.3\Appccelerate.StateMachine.dll</HintPath>
     </Reference>
-    <Reference Include="FubarDev.FtpServer, Version=3.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FubarDev.FtpServer.3.1.1\lib\net461\FubarDev.FtpServer.dll</HintPath>
-    </Reference>
-    <Reference Include="FubarDev.FtpServer.Abstractions, Version=3.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FubarDev.FtpServer.Abstractions.3.1.1\lib\net461\FubarDev.FtpServer.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="FubarDev.FtpServer.Commands, Version=3.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FubarDev.FtpServer.Commands.3.1.1\lib\net461\FubarDev.FtpServer.Commands.dll</HintPath>
-    </Reference>
     <Reference Include="JetBrains.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
     </Reference>

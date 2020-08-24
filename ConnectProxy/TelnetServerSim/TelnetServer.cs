@@ -21,9 +21,7 @@ namespace ConnectProxy.TelnetServerSim
     //}
     class TelnetAppSession : AppSession<TelnetAppSession>
     {
-
-        public event EventHandler<string> seeionClosed;
-
+        
         public string PropmtSymbol { get; set; } = "$ ";
         public override void Send(string message)
         {

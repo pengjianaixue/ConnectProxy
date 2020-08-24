@@ -65,6 +65,7 @@ namespace ConnectProxy.TCAControl
             {
                 AppSession.Send(item.Key);
             }
+            AppSession.sendNoNewLine(">");
         }
         public void startTCAProgramm(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
@@ -722,9 +723,7 @@ namespace ConnectProxy.TCAControl
         public static bool tCAisOpen = false;
         private Dictionary<string, MethodInfo> tcaCommandMethod = new Dictionary<string, MethodInfo>();
         private Type warpperType;
-        private Object warpperObj;
         private string tslPath = "";
-
         private static List<string> baseObjMethod = new List<string>() { "Equals", "GetHashCode", "GetType", "ToString", "callTCACommand" };
         private TCAControler tCAControl = new TCAControler(); 
     }

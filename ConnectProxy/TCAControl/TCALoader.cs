@@ -46,19 +46,19 @@ namespace ConnectProxy.TCALoader
             try
             {
                 #region ResvererCode
-                //tas = new ApplicationControl(addresss);
-                //string[] tsls = tas.GetTslList();
-                //if (tsls.Length == 0)
-                //{
-                //    tas.StartTsl();
-                //    tsls = tas.GetTslList();
-                //    if (tsls.Length == 0)
-                //    {
-                //        error.Errordescription = "Can not start TCA TSL";
-                //        return false;
-                //    }
-                //}
-                //tsl = new TslControlClient(tsls[0]);
+                tas = new ApplicationControl(addresss);
+                string[] tsls = tas.GetTslList();
+                if (tsls.Length == 0)
+                {
+                    tas.StartTsl();
+                    tsls = tas.GetTslList();
+                    if (tsls.Length == 0)
+                    {
+                        error.Errordescription = "Can not start TCA TSL";
+                        return false;
+                    }
+                }
+                tsl = new TslControlClient(tsls[0]);
                 //string[] hwSnrs = tsl.GetHws();
                 //if (hwSnrs.Length == 0)
                 //{
