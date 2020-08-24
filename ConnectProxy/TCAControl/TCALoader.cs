@@ -101,14 +101,22 @@ namespace ConnectProxy.TCALoader
         }
         public void stopTCA(RunTimeError error)
         {
-            if (rumaClient!=null)
+            try
             {
-                RumaControlClientFactory.StopTool(rumaClient);
+                if (rumaClient != null)
+                {
+                    RumaControlClientFactory.StopTool(rumaClient);
+                }
+                else
+                {
+                    RumaControlClientFactory.StopDefaultTool();
+                }
             }
-            else
+            catch (System.Exception ex)
             {
-                RumaControlClientFactory.StopDefaultTool();
+                WriteTraceText(error, "Stop TCA error : " + ex.Message);
             }
+            
             
         }
         public string getTCAControlLog()

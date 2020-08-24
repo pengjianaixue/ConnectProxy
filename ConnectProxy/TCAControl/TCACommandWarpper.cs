@@ -45,10 +45,9 @@ namespace ConnectProxy.TCAControl
                 help(AppSession, stringRequestInfo);
                 return;
             }
-            if (!tCAisOpen && stringRequestInfo.Key != "startTCAProgramm")
+            if (!tCAisOpen)
             {
-                AppSession.Send("TCA not start, please run startTCAProgramm first");
-                return;
+                startTCAProgramm(AppSession, stringRequestInfo);               
             }
             if (tcaCommandMethod.ContainsKey(stringRequestInfo.Key))
             {
@@ -92,10 +91,16 @@ namespace ConnectProxy.TCAControl
 
         }
         
-        public void stopTCA()
+        public void stopTCA(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
             RunTimeError error = new RunTimeError();
             tCAControl.stopTCA(error);
+            if (error.IsError)
+            {
+                AppSession.sendWithAppendPropmt(error.Errordescription);
+                return;
+            }
+            tCAisOpen = false;
         }
         public string getTCAControlLog()
         {
