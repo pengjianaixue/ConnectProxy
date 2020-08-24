@@ -159,20 +159,20 @@ namespace ConnectProxy.TelnetServerSim
         {
 
             #region async
-            //Task.Run(() =>
-            //{
-            //    if (sessionDic.ContainsKey(session.SessionID))
-            //    {
-            //        sessionDic[session.SessionID].SessionRequsetHandle(session, requestInfo);
-            //    }
-            //});
+            Task.Run(() =>
+            {
+                if (sessionDic.ContainsKey(session.SessionID))
+                {
+                    sessionDic[session.SessionID].SessionRequsetHandle(session, requestInfo);
+                }
+            });
             #endregion
             //TODO  maybe for  preformance reason need make it async Run
-            if (sessionDic.ContainsKey(session.SessionID))
-            {
-                sessionDic[session.SessionID].SessionRequsetHandle(session, requestInfo);
-            }
-            
+            //if (sessionDic.ContainsKey(session.SessionID))
+            //{
+            //    sessionDic[session.SessionID].SessionRequsetHandle(session, requestInfo);
+            //}
+
         }
         public void updateFSMConfiguration(FSMConfiguration fsmConfiguration)
         {
