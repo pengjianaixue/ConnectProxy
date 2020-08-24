@@ -54,13 +54,18 @@ namespace ConnectProxy.FSM.FSMAction
         {
 
             if (stringRequestInfo.Key.Length != 0 )
-            {
+            { 
+                if (CT11ModeActionDic.ContainsKey(stringRequestInfo.Key))
+                {
+                    CT11ModeActionDic[stringRequestInfo.Key](AppSession, stringRequestInfo);
+                    return;
+                }
                 tCACommandWarpper.callTCACommand(AppSession, stringRequestInfo);
                 return;
             }
             else
             {
-                AppSession.sendPropmt();
+                AppSession.sendNoNewLine(">");
             }
         }
         private string tslPath = "";
