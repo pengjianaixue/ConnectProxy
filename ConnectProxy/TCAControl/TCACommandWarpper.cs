@@ -67,7 +67,7 @@ namespace ConnectProxy.TCAControl
             }
             AppSession.sendNoNewLine(">");
         }
-        public void startTCAProgramm(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
+        private void startTCAProgramm(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
             if (!tCAisOpen)
             {
@@ -117,7 +117,8 @@ namespace ConnectProxy.TCAControl
             }
             RunTimeError error = new RunTimeError();
             string fileName = System.IO.Path.GetFileName(stringRequestInfo.GetFirstParam());
-            fileName = Environment.CurrentDirectory + "/RecviFile/" + fileName;
+            const String dirName = "/RecviFile/";
+            fileName = Environment.CurrentDirectory + dirName + fileName;
             if (!System.IO.File.Exists(fileName))
             {
                 AppSession.sendNoNewLine(string.Format("Load LMC fail, The special LMC file: {0} is not exist on server local PC", 

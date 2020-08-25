@@ -63,10 +63,7 @@ namespace ConnectProxy.FSM.FSMAction
                 tCACommandWarpper.callTCACommand(AppSession, stringRequestInfo);
                 return;
             }
-            else
-            {
-                AppSession.sendNoNewLine(">");
-            }
+            AppSession.sendNoNewLine(">");
         }
         private string tslPath = "";
         private TCACommandWarpper tCACommandWarpper;

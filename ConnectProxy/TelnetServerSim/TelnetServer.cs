@@ -128,33 +128,6 @@ namespace ConnectProxy.TelnetServerSim
             sessionDic.Add(session.SessionID, proxyUserSession);
 
         }
-        //public void resetRequsetAction()
-        //{
-        //    telnetServer.NewRequestReceived += new RequestHandler<TelnetAppSession, StringRequestInfo>(appServer_NewRequestReceived);
-        //    RequsetActionList.Add(appServer_NewRequestReceived);
-
-        //}
-        //public void registerRequsetAction(RequestHandler<TelnetAppSession, StringRequestInfo> requestHandle)
-        //{
-        //    //telnetServer.SetupCommands()
-        //    foreach (var item in RequsetActionList)
-        //    {
-        //        telnetServer.NewRequestReceived -= item;
-        //    }
-        //    RequsetActionList.Clear();
-        //    RequsetActionList.Add(requestHandle);
-        //    telnetServer.NewRequestReceived += requestHandle;
-
-        //}
-        //public void registerAction(string actionName, Action<TelnetAppSession, StringRequestInfo> actionFunction, string ModeName = "Base")
-        //{
-        //    serverAction.Add(actionName, actionFunction);
-        //}
-        //public ActionDic serverAction
-        //{
-        //    get;
-        //    set;
-        //}
         private void appServer_NewRequestReceived(TelnetAppSession session, StringRequestInfo requestInfo)
         {
 
