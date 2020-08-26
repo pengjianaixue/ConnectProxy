@@ -96,49 +96,50 @@ namespace ConnectProxy.FileTransfer
                                 fileStream.Write(Encoding.Default.GetBytes(recviStrSplit[1]), 0, recviStrSplit[1].Length);
                             }
                         }
-                        //else if (headerInfo.Contains(fileMD5flag))
-                        //{
-                        //    string[] splitchar = new string[] { fileMD5flag };
-                        //    string[] recviStrSplit = headerInfo.Split(splitchar, StringSplitOptions.None);
-                        //    if (recviStrSplit.Length == 0)
-                        //    {
-                        //        return;
-                        //    }
-                        //    recviedFileMD5 = recviStrSplit[0];
-                        //    if (recviStrSplit.Length > 1 && recviStrSplit[1].Length > 0)
-                        //    {
-                        //        bufferPackCombine = Encoding.Default.GetBytes(recviStrSplit[1]);
-                        //    }
-                        //}
+                        else if (headerInfo.Contains(fileMD5flag))
+                        {
+                            string[] splitchar = new string[] { fileMD5flag };
+                            string[] recviStrSplit = headerInfo.Split(splitchar, StringSplitOptions.None);
+                            if (recviStrSplit.Length == 0)
+                            {
+                                return;
+                            }
+                            recviedFileMD5 = recviStrSplit[0];
+                            if (recviStrSplit.Length > 1 && recviStrSplit[1].Length > 0)
+                            {
+                                bufferPackCombine = Encoding.Default.GetBytes(recviStrSplit[1]);
+                            }
+                        }
                     }
                 }
                 recviIsSuccess = true;
                 if (fileStream != null)
                 {
                     fileStream.Flush();
-                    //string reponse = "";
-                    //bool isOK = false;
-                    //if (clacFileMD5(fileStream)!= recviedFileMD5)
-                    //{
-                    //    MessageBox.Show("The Recvi file is broken!",
-                    //    "Recvi error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    //    reponse = "File transmit fail, the file recvied is not broken";
-                    //    stream.Write(Encoding.Default.GetBytes(reponse), 0, reponse.Length);
-                    //}
-                    //else
-                    //{
-                    //    isOK = true;
-                    //    reponse = "File transmit Success";
-                    //    stream.Write(Encoding.Default.GetBytes(reponse), 0, reponse.Length);
-                    //}
                     fileStream.Close();
-                    //if (!isOK)
-                    //{
-                    //    File.Delete(fileName);
-                    //}
-                    
                 }
-                
+                string reponse = "";
+                bool fileIsUnbroken = false;
+                fileStream = new FileStream(fileName, FileMode.Open);
+                if (clacFileMD5(fileStream) != recviedFileMD5)
+                {
+                    MessageBox.Show("The Recvi file is broken!",
+                    "Recvi error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    reponse = "File transmit fail, the file recvied is not broken";
+                    stream.Write(Encoding.Default.GetBytes(reponse), 0, reponse.Length);
+                }
+                else
+                {
+                    fileIsUnbroken = true;
+                    reponse = "File transmit uccess";
+                    stream.Write(Encoding.Default.GetBytes(reponse), 0, reponse.Length);
+                }
+                fileStream.Close();
+                if (!fileIsUnbroken)
+                {
+                    File.Delete(fileName);
+                }
+
             }
             catch (System.Exception ex)
             {
