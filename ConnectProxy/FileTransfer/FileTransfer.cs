@@ -123,8 +123,6 @@ namespace ConnectProxy.FileTransfer
                 fileStream = new FileStream(fileName, FileMode.Open);
                 if (clacFileMD5(fileStream) != recviedFileMD5)
                 {
-                    MessageBox.Show("The Recvi file is broken!",
-                    "Recvi error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     reponse = "File transmit fail, the file recvied is not broken";
                     stream.Write(Encoding.Default.GetBytes(reponse), 0, reponse.Length);
                 }
