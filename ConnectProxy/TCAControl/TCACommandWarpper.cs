@@ -45,9 +45,19 @@ namespace ConnectProxy.TCAControl
                 help(AppSession, stringRequestInfo);
                 return;
             }
-            if (!tCAisOpen)
+            if (!tCAIsOpen)
             {
-                startTCAProgramm(AppSession, stringRequestInfo);               
+                AppSession.Send("TCA is not running, start TCA...");
+                startTCAProgramm(AppSession, stringRequestInfo);
+                if (tCAIsOpen)
+                {
+                    AppSession.Send("TCA start finished");
+                }
+                else
+                {
+                    AppSession.Send("TCA start error");
+                }
+                
             }
             if (tcaCommandMethod.ContainsKey(stringRequestInfo.Key))
             {
@@ -69,7 +79,7 @@ namespace ConnectProxy.TCAControl
         }
         private void startTCAProgramm(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
-            if (!tCAisOpen)
+            if (!tCAIsOpen)
             {
                 RunTimeError runTimeError = new RunTimeError();
                 if (tslPath.Length == 0)
@@ -80,10 +90,10 @@ namespace ConnectProxy.TCAControl
                 if (!tCAControl.startTCA(runTimeError, "localhost", tslPath))
                 {
                     AppSession.sendWithAppendPropmt("open TCA fail:" + runTimeError.Errordescription);
-                    tCAisOpen = false;
+                    tCAIsOpen = false;
                     return;
                 }
-                tCAisOpen = true;
+                tCAIsOpen = true;
             }
             else
             {
@@ -101,7 +111,7 @@ namespace ConnectProxy.TCAControl
                 AppSession.sendWithAppendPropmt(error.Errordescription);
                 return;
             }
-            tCAisOpen = false;
+            tCAIsOpen = false;
         }
         public string getTCAControlLog()
         {
@@ -123,6 +133,7 @@ namespace ConnectProxy.TCAControl
             {
                 AppSession.sendNoNewLine(string.Format("Load LMC fail, The special LMC file: {0} is not exist on server local PC", 
                     System.IO.Path.GetFileName(stringRequestInfo.GetFirstParam())));
+                return;
             }
             string CpriPort = getParameter(stringRequestInfo, 1);
             string IsRestart = getParameter(stringRequestInfo, 2);
@@ -719,9 +730,9 @@ namespace ConnectProxy.TCAControl
         }
         private bool isVaildCheck()
         {
-            return tCAisOpen;
+            return tCAIsOpen;
         }
-        public static bool tCAisOpen = false;
+        public static bool tCAIsOpen = false;
         private Dictionary<string, MethodInfo> tcaCommandMethod = new Dictionary<string, MethodInfo>();
         private Type warpperType;
         private string tslPath = "";

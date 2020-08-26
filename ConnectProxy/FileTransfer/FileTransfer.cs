@@ -7,12 +7,30 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Net.Sockets;
+using System.Security.Cryptography;
+using System.Windows.Forms;
 
 namespace ConnectProxy.FileTransfer
 {
+
+
+    
     class FileTransferServer
     {
+        static string clacFileMD5(FileStream stream)
+        {
+            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+            md5.ComputeHash(stream);
+            byte[] b = md5.Hash;
+            md5.Clear();
+            StringBuilder sb = new StringBuilder(32);
+            for (int i = 0; i < b.Length; i++)
+            {
+                sb.Append(b[i].ToString("X2"));
+            }
+            return sb.ToString();
 
+        }
         public FileTransferServer()
         {
             listener.Start();
@@ -33,14 +51,18 @@ namespace ConnectProxy.FileTransfer
 
         public void recviFile(object obj)
         {
+            string recviedFileMD5 = "";
             bool isEnterFileContexet = false;
             string fileName = homeDir + "/";
+            if (!Directory.Exists(fileName))
+            {
+                Directory.CreateDirectory(fileName);
+            }
             try
             {
-                //Task<TcpClient> tcpClientTask = (Task<TcpClient>)obj;
-                //TcpClient tcpClient = tcpClientTask.Result;
                 TcpClient tcpClient = (TcpClient)obj;
-                byte[] buffer = new byte[tcpClient.ReceiveBufferSize];
+                byte[] buffer = new byte[1024*1024];
+                byte[] bufferPackCombine = null;
                 NetworkStream stream = tcpClient.GetStream();
                 int readLength = 0;
                 while ((readLength = stream.Read(buffer, 0, buffer.Length)) > 0)
@@ -51,12 +73,17 @@ namespace ConnectProxy.FileTransfer
                     }
                     else
                     {
-                        string getfileName = System.Text.Encoding.Default.GetString(buffer,0, readLength);
-                        string flag = "#--";
-                        if (getfileName.Contains(flag))
+                        string headerInfo = Encoding.Default.GetString(buffer,0, readLength);
+                        string fileNameflag = "#--";
+                        string fileMD5flag = "-#-";
+                        if (headerInfo.Contains(fileNameflag))
                         {
-                            string[] splitchar = new string[] { flag };
-                            string[] recviStrSplit =  getfileName.Split(splitchar,StringSplitOptions.None);
+                            if (bufferPackCombine != null &&  bufferPackCombine.Length !=0)
+                            {
+                                headerInfo = Encoding.Default.GetString(bufferPackCombine) + headerInfo;
+                            }
+                            string[] splitchar = new string[] { fileNameflag };
+                            string[] recviStrSplit =  headerInfo.Split(splitchar,StringSplitOptions.None);
                             if (recviStrSplit.Length == 0)
                             {
                                 return;
@@ -64,19 +91,54 @@ namespace ConnectProxy.FileTransfer
                             fileName = fileName + recviStrSplit[0];
                             fileStream = new FileStream(fileName, FileMode.Create);
                             isEnterFileContexet = true;
-                            if (recviStrSplit.Length==2)
+                            if ( recviStrSplit.Length==2 &&  (recviStrSplit[1].Length!=0))
                             {
-                                fileStream.Write(System.Text.Encoding.Default.GetBytes(recviStrSplit[1]), 0, recviStrSplit[1].Length);
+                                fileStream.Write(Encoding.Default.GetBytes(recviStrSplit[1]), 0, recviStrSplit[1].Length);
                             }
                         }
+                        //else if (headerInfo.Contains(fileMD5flag))
+                        //{
+                        //    string[] splitchar = new string[] { fileMD5flag };
+                        //    string[] recviStrSplit = headerInfo.Split(splitchar, StringSplitOptions.None);
+                        //    if (recviStrSplit.Length == 0)
+                        //    {
+                        //        return;
+                        //    }
+                        //    recviedFileMD5 = recviStrSplit[0];
+                        //    if (recviStrSplit.Length > 1 && recviStrSplit[1].Length > 0)
+                        //    {
+                        //        bufferPackCombine = Encoding.Default.GetBytes(recviStrSplit[1]);
+                        //    }
+                        //}
                     }
                 }
                 recviIsSuccess = true;
                 if (fileStream != null)
                 {
-                    fileStream.FlushAsync();
+                    fileStream.Flush();
+                    //string reponse = "";
+                    //bool isOK = false;
+                    //if (clacFileMD5(fileStream)!= recviedFileMD5)
+                    //{
+                    //    MessageBox.Show("The Recvi file is broken!",
+                    //    "Recvi error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    //    reponse = "File transmit fail, the file recvied is not broken";
+                    //    stream.Write(Encoding.Default.GetBytes(reponse), 0, reponse.Length);
+                    //}
+                    //else
+                    //{
+                    //    isOK = true;
+                    //    reponse = "File transmit Success";
+                    //    stream.Write(Encoding.Default.GetBytes(reponse), 0, reponse.Length);
+                    //}
                     fileStream.Close();
+                    //if (!isOK)
+                    //{
+                    //    File.Delete(fileName);
+                    //}
+                    
                 }
+                
             }
             catch (System.Exception ex)
             {

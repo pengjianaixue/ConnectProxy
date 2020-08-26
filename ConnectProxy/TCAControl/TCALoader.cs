@@ -83,6 +83,7 @@ namespace ConnectProxy.TCALoader
                 //this.rumaClient = RumaControlClientFactory.Create(toolUri);
                 #endregion
                 this.rumaClient = Tiger.Ruma.RumaControlClientFactory.CreateDefault();
+                //this.rumaClient = RumaControlClientFactory.Create(toolUri);
                 this.rCpriDataFlow = this.rumaClient.CpriDataFlow;
                 this.rCarrierConfig = this.rumaClient.CarrierConfig;
                 this.rCpriConfig = this.rumaClient.CpriConfig;
@@ -136,12 +137,8 @@ namespace ConnectProxy.TCALoader
         {
             try
             {
-                if (Convert.ToBoolean(rRULoader.UpgradeRU(lmcPath, cpriPortMapping[cpriPort], Convert.ToUInt64(physPos), NumberboolDic[restart])))
-                {
-                    return restartRuToSlot(error,lmcPath, cpriPort, physPos);
-                }
-                WriteTraceText(error, string.Format("Load LMC:{0} Fail : " , lmcPath));
-                return false;
+                return Convert.ToBoolean(rRULoader.UpgradeRU(lmcPath, cpriPortMapping[cpriPort], Convert.ToUInt64(physPos), NumberboolDic[restart]));
+
             }
             catch (Exception e)
             {
