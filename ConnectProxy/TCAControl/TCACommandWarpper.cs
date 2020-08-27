@@ -106,12 +106,12 @@ namespace ConnectProxy.TCAControl
         {
             RunTimeError error = new RunTimeError();
             tCAControl.stopTCA(error);
+            tCAIsOpen = false;
             if (error.IsError)
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
                 return;
             }
-            tCAIsOpen = false;
         }
         public string getTCAControlLog()
         {

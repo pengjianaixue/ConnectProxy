@@ -59,31 +59,20 @@ namespace ConnectProxy.TCALoader
                     }
                 }
                 tsl = new TslControlClient(tsls[0]);
-                //string[] hwSnrs = tsl.GetHws();
-                //if (hwSnrs.Length == 0)
-                //{
-                //    error.Errordescription = "Can not get HW link";
-                //    return false;
-                //}
-                //string[] uris = tsl.GetServiceList(ToolType.ID_RUMA);
-                //string toolUri = "";
-                //if (uris.Length == 1)
-                //{
-                //    toolUri = uris[0];
-                //}
-                //else if (uris.Length > 1)
-                //{
-                //    toolUri = uris[uris.Length - 1];
-                //}
-                //else
-                //{
-                //    toolUri = tsl.StartService(ToolType.ID_RUMA, hwSnrs[0]);
-                //}
-                //error CpriPort mapping to  Port number
-                //this.rumaClient = RumaControlClientFactory.Create(toolUri);
                 #endregion
-                this.rumaClient = Tiger.Ruma.RumaControlClientFactory.CreateDefault();
-                //this.rumaClient = RumaControlClientFactory.Create(toolUri);
+                #region TCA StartParameter
+                
+                #endregion
+                try
+                {
+                    this.rumaClient = Tiger.Ruma.RumaControlClientFactory.CreateCustom(selectedCpriPorts, selectedTriggerPorts, rxPortBuffer,
+                                                                                    RxIqBandWidth, TxIqBandWidth, totalRxBufferSize,
+                                                                                    totalTxBufferSize, allocateAux, allocateDebugPort);
+                }
+                catch (System.Exception ex)
+                {
+                    this.rumaClient = Tiger.Ruma.RumaControlClientFactory.CreateDefault();
+                }
                 this.rCpriDataFlow = this.rumaClient.CpriDataFlow;
                 this.rCarrierConfig = this.rumaClient.CarrierConfig;
                 this.rCpriConfig = this.rumaClient.CpriConfig;
@@ -922,6 +911,44 @@ namespace ConnectProxy.TCALoader
             {"AXC_24_BIT",AxcContainerFormat.AXC_24_BIT},
             {"AXC_30_BIT",AxcContainerFormat.AXC_30_BIT},
         };
+        public static List<string> selectedCpriPorts = new List<string> { "1A","1B","2A","2B",
+                                                                    "3A","3B","4A","4B",
+                                                                    "5A","5B","6A","6B",
+                                                                    "7A","7B","8A","8B"};
+
+        public static List<string> selectedTriggerPorts = new List<string> { "1","2","3","4",
+                                                                       "5","6","7","8",
+                                                                       "9","10","11","12",
+                                                                       "13","14","15","16"};
+        public static Dictionary<string, int> rxPortBuffer = new Dictionary<string, int> { { "1A", 512 }, { "1B",512},
+                                                                                    { "2A", 512 }, { "2B",512},
+                                                                                    { "3A", 512 }, { "3B",512},
+                                                                                    { "4A", 512 }, { "4B",512},
+                                                                                    { "5A", 512 }, { "5B",512},
+                                                                                    { "6A", 512 }, { "6B",512},
+                                                                                    { "7A", 512 }, { "7B",512},
+                                                                                    { "8A", 512 }, { "8B",512}};
+
+        public static Dictionary<string, int> RxIqBandWidth = new Dictionary<string, int> { { "1A", 80 }, { "1B",80},
+                                                                                    { "2A", 80 }, { "2B",80},
+                                                                                    { "3A", 80 }, { "3B",80},
+                                                                                    { "4A", 80 }, { "4B",80},
+                                                                                    { "5A", 80 }, { "5B",80},
+                                                                                    { "6A", 80 }, { "6B",80},
+                                                                                    { "7A", 80 }, { "7B",80},
+                                                                                    { "8A", 80 }, { "8B",80}};
+        public static Dictionary<string, int> TxIqBandWidth = new Dictionary<string, int> { { "1A", 80 }, { "1B",80},
+                                                                                    { "2A", 80 }, { "2B",80},
+                                                                                    { "3A", 80 }, { "3B",80},
+                                                                                    { "4A", 80 }, { "4B",80},
+                                                                                    { "5A", 80 }, { "5B",80},
+                                                                                    { "6A", 80 }, { "6B",80},
+                                                                                    { "7A", 80 }, { "7B",80},
+                                                                                    { "8A", 80 }, { "8B",80}};
+        uint totalRxBufferSize = 2016;
+        uint totalTxBufferSize = 512;
+        bool allocateAux = true;
+        bool allocateDebugPort = true;
         #endregion
         private IRumaControlClient rumaClient;
         private ApplicationControl tas;

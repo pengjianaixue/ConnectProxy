@@ -58,9 +58,11 @@ namespace ConnectProxy.FSM.FSMAction
                 if (CT11ModeActionDic.ContainsKey(stringRequestInfo.Key))
                 {
                     CT11ModeActionDic[stringRequestInfo.Key](AppSession, stringRequestInfo);
+                    AppSession.sendNoNewLine("\r>");
                     return;
                 }
                 tCACommandWarpper.callTCACommand(AppSession, stringRequestInfo);
+                AppSession.sendNoNewLine("\r>");
                 return;
             }
             AppSession.sendNoNewLine(">");

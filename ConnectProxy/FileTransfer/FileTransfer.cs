@@ -45,6 +45,7 @@ namespace ConnectProxy.FileTransfer
             {
                 var tcpClient =  listener.AcceptTcpClient();
                 recviThread = new Thread(recviFile);
+                recviThread.Priority = ThreadPriority.Highest;
                 recviThread.Start(tcpClient);
             }
         }
@@ -61,7 +62,7 @@ namespace ConnectProxy.FileTransfer
             try
             {
                 TcpClient tcpClient = (TcpClient)obj;
-                byte[] buffer = new byte[1024*1024];
+                byte[] buffer = new byte[256];
                 byte[] bufferPackCombine = null;
                 NetworkStream stream = tcpClient.GetStream();
                 int readLength = 0;
@@ -118,25 +119,25 @@ namespace ConnectProxy.FileTransfer
                     fileStream.Flush();
                     fileStream.Close();
                 }
-                string reponse = "";
-                bool fileIsUnbroken = false;
-                fileStream = new FileStream(fileName, FileMode.Open);
-                if (clacFileMD5(fileStream) != recviedFileMD5)
-                {
-                    reponse = "File transmit fail, the file recvied is not broken";
-                    stream.Write(Encoding.Default.GetBytes(reponse), 0, reponse.Length);
-                }
-                else
-                {
-                    fileIsUnbroken = true;
-                    reponse = "File transmit uccess";
-                    stream.Write(Encoding.Default.GetBytes(reponse), 0, reponse.Length);
-                }
-                fileStream.Close();
-                if (!fileIsUnbroken)
-                {
-                    File.Delete(fileName);
-                }
+                //string reponse = "";
+                //bool fileIsUnbroken = false;
+                //fileStream = new FileStream(fileName, FileMode.Open);
+                //if (clacFileMD5(fileStream) != recviedFileMD5)
+                //{
+                //    reponse = "File transmit fail, the file recvied is not broken";
+                //    stream.Write(Encoding.Default.GetBytes(reponse), 0, reponse.Length);
+                //}
+                //else
+                //{
+                //    fileIsUnbroken = true;
+                //    reponse = "File transmit uccess";
+                //    stream.Write(Encoding.Default.GetBytes(reponse), 0, reponse.Length);
+                //}
+                //fileStream.Close();
+                //if (!fileIsUnbroken)
+                //{
+                //    File.Delete(fileName);
+                //}
 
             }
             catch (System.Exception ex)
