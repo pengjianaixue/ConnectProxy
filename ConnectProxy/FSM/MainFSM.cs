@@ -172,6 +172,7 @@ namespace ConnectProxy
             Connncted,
             RuMode,
             CT11Mode,
+            TCAIcolishMode,
             NeedServerOpen
         }
 
@@ -193,6 +194,7 @@ namespace ConnectProxy
             Connncted,
             RuCommand,
             CT11Command,
+            TCAIcolishCommand,
             GoBack,
             ServerOpend,
         }
@@ -205,20 +207,14 @@ namespace ConnectProxy
             fSMData.tCACommand = new TCAControl.TCACommandWarpper(fSMData.tcaTSLPath);
             proxyRunMachine = new StateMachineDefinitionBuilder<States, Events>();
             proxyRunMachine.WithInitialState(States.Connncted);
-            //proxyRunMachine.DefineHierarchyOn(States.CT11Mode).WithHistoryType(HistoryType.Deep)
-            //proxyRunMachine.In(States.NeedServerOpen).ExecuteOnEntry(startServer).On(Events.ServerOpend).Goto(States.WaitConncet).Execute(waitForConnect);
-            //proxyRunMachine.In(States.WaitConncet).On(Events.Connncted).Goto(States.Connncted).Execute(connected);
             proxyRunMachine.In(States.Connncted).On(Events.CT11Command).Goto(States.CT11Mode).Execute(ct11Mode);
             proxyRunMachine.In(States.Connncted).On(Events.RuCommand).Goto(States.RuMode).Execute(ruMode);
+            proxyRunMachine.In(States.Connncted).On(Events.TCAIcolishCommand).Goto(States.TCAIcolishMode).Execute(tCAIcolishMode);
+            proxyRunMachine.In(States.TCAIcolishMode).On(Events.GoBack).Goto(States.Connncted).Execute(connected);
             proxyRunMachine.In(States.CT11Mode).On(Events.RuCommand).Goto(States.RuMode).Execute(ruMode);
             proxyRunMachine.In(States.CT11Mode).On(Events.GoBack).Goto(States.Connncted).Execute(connected);
             proxyRunMachine.In(States.RuMode).On(Events.CT11Command).Goto(States.CT11Mode).Execute(ct11Mode);
             proxyRunMachine.In(States.RuMode).On(Events.GoBack).Goto(States.Connncted).Execute(connected);
-            // self roll back
-            //proxyRunMachine.In(States.Connncted).On(Events.Disconnect).Goto(States.Disconnect).Execute(waitForConnect);
-            //proxyRunMachine.In(States.Connncted).On(Events.Connncted).Goto(States.Connncted).Execute(connected);
-            //proxyRunMachine.In(States.CT11Mode).On(Events.CT11Command).Goto(States.CT11Mode).Execute(ct11Mode);
-            //proxyRunMachine.In(States.RuMode).On(Events.RuCommand).Goto(States.RuMode).Execute(ruMode);
             var definition = proxyRunMachine.Build();
             fSMData.elevator = definition.CreateActiveStateMachine();
             fSMData.elevator.Start();
@@ -227,6 +223,7 @@ namespace ConnectProxy
             connectedAction = new ConnectedAction(ref fSMData);
             ruModeAction = new RuModeAction(ref fSMData);
             ct11ModeAction = new CT11ModeAction(ref fSMData);
+            tCAIcolishAction = new TCAIcolishAction(ref fSMData);
         }
         public TelnetFSM(FSMConfiguration fsmConfiguration)
         {
@@ -251,7 +248,7 @@ namespace ConnectProxy
             //fSMData.elevator.AddExtension(new Appccelerate.Log4Net.StateMachineLogExtension<States, Events>("fSMData.elevator"));
             #endregion      
             startFSM(fsmConfiguration);
-            runAction = connectedRequestHandler;
+            connected();
 
         }
         public void stopFSM()
@@ -267,32 +264,25 @@ namespace ConnectProxy
         }
         private void connected()
         {
-            runAction = connectedRequestHandler;
+            runAction = connectedAction.runAction;
         }
         private void ruMode()
         {
-            runAction = RuCommandMode;
+            runAction = ruModeAction.runAction;
         }
         private void ct11Mode()
         {
-            runAction = CT11CommandMode;
+            runAction = ct11ModeAction.runAction;
         }
-        private void connectedRequestHandler(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
+        private void tCAIcolishMode()
         {
-            connectedAction.runAction(AppSession, stringRequestInfo);
-        }
-        private void RuCommandMode(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
-        {
-            ruModeAction.runAction(AppSession, stringRequestInfo);
-        }
-        private void CT11CommandMode(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
-        {
-            ct11ModeAction.runAction(AppSession, stringRequestInfo);
+            runAction = tCAIcolishAction.runAction;
         }
         private StateMachineDefinitionBuilder<States, Events> proxyRunMachine;
         private FSMData fSMData;
         private ConnectedAction connectedAction = null;
         private CT11ModeAction ct11ModeAction = null;
+        private TCAIcolishAction tCAIcolishAction = null;
         private RuModeAction ruModeAction = null;
         private FSMConfiguration mainFSMConfiguration;
         private Action<TelnetAppSession, StringRequestInfo> runAction = null;

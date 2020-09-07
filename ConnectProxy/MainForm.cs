@@ -15,6 +15,7 @@ using ConnectProxy.ConfigLoad;
 using ConnectProxy.FSM;
 using ConnectProxy.FileTransfer;
 using ConnectProxy.TelnetServerSim;
+using ConnectProxy.FSM.FSMAction;
 
 namespace ConnectProxy
 {
@@ -53,7 +54,7 @@ namespace ConnectProxy
         private void ConnctConfig_FormClosed(object sender, FormClosedEventArgs e)
         {
             //lmcFtpServer.stopServer();
-
+            
         }
 
         private void button_tcaFolderBrowser_Click(object sender, EventArgs e)
@@ -165,6 +166,11 @@ namespace ConnectProxy
                System.Windows.Forms.MessageBoxButtons.YesNo,
                System.Windows.Forms.MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
             {
+                foreach (var item in TCAIcolishAction.ComportDic)
+                {
+                    RunTimeError runTimeError = new RunTimeError();
+                    TCAControler.DestroyCOMPort(runTimeError, (int)item.Value.Second);
+                }
                 fileTransferServer.stopServer();
                 notifyIcon_hide.Visible = false;
                 this.Close();

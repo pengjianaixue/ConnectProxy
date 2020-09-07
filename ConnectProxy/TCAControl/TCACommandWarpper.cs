@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO.Ports;
 
 namespace ConnectProxy.TCAControl
 {
@@ -19,6 +20,7 @@ namespace ConnectProxy.TCAControl
             OperationalSuccess,
             OperationalFail
         }
+        public static event EventHandler<Tuple<string,string>> ComportCreated;
         public TCACommandWarpper(string tcaPath)
         {
             tslPath = tcaPath;
@@ -77,7 +79,7 @@ namespace ConnectProxy.TCAControl
             }
             AppSession.sendNoNewLine(">");
         }
-        private void startTCAProgramm(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
+        private  void startTCAProgramm(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
             if (!tCAIsOpen)
             {
@@ -87,7 +89,7 @@ namespace ConnectProxy.TCAControl
                     AppSession.sendNoNewLine("please set the Lab PC TCA(TSL.exe) path");
                     return;
                 }
-                if (!tCAControl.startTCA(runTimeError, "localhost", tslPath))
+                if (!TCAControler.startTCA(runTimeError, "localhost", tslPath))
                 {
                     AppSession.sendWithAppendPropmt("open TCA fail:" + runTimeError.Errordescription);
                     tCAIsOpen = false;
@@ -239,6 +241,67 @@ namespace ConnectProxy.TCAControl
             {
                 AppSession.sendWithAppendPropmt(error.Errordescription);
             }
+        }
+        public  static bool CreateComport(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo,out int PortObjectID)
+        {
+            RunTimeError error = new RunTimeError();
+            if (!tCAIsOpen)
+            {
+                if (TCAControler.startTCA(error, "localhost", tslPath))
+                {
+                    tCAIsOpen = true;
+                }
+                else
+                {
+                    AppSession.Send("startTCA error" + "\n&");
+                    PortObjectID = 0;
+                    return false;
+                }
+            }
+
+            if (getParameterNumber(stringRequestInfo) != 1)
+            {
+                sendParameterError(AppSession);
+                PortObjectID = 0;
+                return false;
+            }
+            string comPortName = "";
+            var vaildcomportList = TCAControler.getTCATPFComports(error);
+            if (vaildcomportList.Length == 0 )
+            {
+                AppSession.Send("Can not find vaild TCA serial port!" + "\n&");
+                PortObjectID = 0;
+                return false;
+            }
+            foreach (var item in vaildcomportList)
+            {
+                SerialPort serialPort = new SerialPort(item);
+                try
+                {
+                    serialPort.Open();
+                }
+                catch (System.Exception ex)
+                {
+                    serialPort.Close();
+                    continue;
+                }
+                if (serialPort.IsOpen)
+                {
+                    serialPort.Close();
+                    comPortName = item;
+                    PortObjectID = TCAControler.CreateComport(error, getParameter(stringRequestInfo, 0), comPortName);
+                    if (!error.IsError)
+                    {
+                        ComportCreated?.Invoke(null, new Tuple<string, string>(getParameter(stringRequestInfo, 0), comPortName));
+                        return true;
+                    }
+                    error.Errordescription = "";
+                }
+            }
+            AppSession.Send("Create the TCA virtual serial port faild:" + error.Errordescription + "\n&");
+            PortObjectID = 0;
+            return false;
+
         }
         public void DeleteCarrier(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
@@ -716,26 +779,26 @@ namespace ConnectProxy.TCAControl
             }
         }
         #endregion
-        private void sendParameterError(TelnetAppSession AppSession)
+        private static void sendParameterError(TelnetAppSession AppSession)
         {
             AppSession.sendWithAppendPropmt("parameter number error");
         }
-        private int getParameterNumber(StringRequestInfo stringRequestInfo)
+        private static int getParameterNumber(StringRequestInfo stringRequestInfo)
         {
             return stringRequestInfo.Parameters.Length;
         }
-        private string getParameter(StringRequestInfo stringRequestInfo,uint index)
+        private static string getParameter(StringRequestInfo stringRequestInfo,uint index)
         {
             return stringRequestInfo.Parameters[index];
         }
-        private bool isVaildCheck()
+        private static bool isVaildCheck()
         {
             return tCAIsOpen;
         }
         public static bool tCAIsOpen = false;
         private Dictionary<string, MethodInfo> tcaCommandMethod = new Dictionary<string, MethodInfo>();
         private Type warpperType;
-        private string tslPath = "";
+        private static string tslPath = "";
         private static List<string> baseObjMethod = new List<string>() { "Equals", "GetHashCode", "GetType", "ToString", "callTCACommand" };
         private TCAControler tCAControl = new TCAControler(); 
     }

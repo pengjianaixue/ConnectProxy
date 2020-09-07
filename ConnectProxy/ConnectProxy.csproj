@@ -298,8 +298,10 @@
     <Compile Include="FSM\FSMAction\CT11ModeAction.cs" />
     <Compile Include="FSM\FSMAction\interface\IFSMAction.cs" />
     <Compile Include="FSM\FSMAction\RuModeAction.cs" />
+    <Compile Include="FSM\FSMAction\TCAIcolishAction.cs" />
     <Compile Include="FSM\FSMConfiguration.cs" />
     <Compile Include="FSM\FSMData.cs" />
+    <Compile Include="LogHelper.cs" />
     <Compile Include="SerialPort\SerialPort.cs" />
     <Compile Include="FSM\MainFSM.cs" />
     <Compile Include="RunTimeError.cs" />
@@ -328,7 +330,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="Config\log4net.config" />
+    <None Include="Config\log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Config\log4net.unix.config" />
     <None Include="ConnectProxy_TemporaryKey.pfx" />
     <None Include="packages.config" />

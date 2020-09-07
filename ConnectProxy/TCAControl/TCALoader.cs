@@ -15,24 +15,7 @@ namespace ConnectProxy.TCALoader
     {
         public TCAControler()
         {
-            cpriPortMapping.Add("1A", 0);
-            cpriPortMapping.Add("1B", 1);
-            cpriPortMapping.Add("2A", 2);
-            cpriPortMapping.Add("2B", 3);
-            cpriPortMapping.Add("3A", 4);
-            cpriPortMapping.Add("3B", 5);
-            cpriPortMapping.Add("4A", 6);
-            cpriPortMapping.Add("4B", 7);
-            cpriPortMapping.Add("5A", 8);
-            cpriPortMapping.Add("5B", 9);
-            cpriPortMapping.Add("6A", 10);
-            cpriPortMapping.Add("6B", 11);
-            cpriPortMapping.Add("7A", 12);
-            cpriPortMapping.Add("7B", 13);
-            cpriPortMapping.Add("8A", 14);
-            cpriPortMapping.Add("8B", 15);
-            //logRecorder = new FileAppender(ILayout layout, "./TCALoader/" + DateTime.Now.ToString() + "log.txt", true);
-            //logRecorder.Writer.WriteLineAsync();
+            
         }
         ~TCAControler()
         {
@@ -41,7 +24,7 @@ namespace ConnectProxy.TCALoader
         // Interface
         #region Interface
         //Note: If the user PC user the Global Proxy(IE Setup), this Function will fail
-        public bool startTCA(RunTimeError error, string addresss, string exePath = "")
+        public static bool startTCA(RunTimeError error, string addresss, string exePath = "")
         {
             try
             {
@@ -65,25 +48,24 @@ namespace ConnectProxy.TCALoader
                 #endregion
                 try
                 {
-                    this.rumaClient = Tiger.Ruma.RumaControlClientFactory.CreateCustom(selectedCpriPorts, selectedTriggerPorts, rxPortBuffer,
+                    rumaClient = Tiger.Ruma.RumaControlClientFactory.CreateCustom(selectedCpriPorts, selectedTriggerPorts, rxPortBuffer,
                                                                                     RxIqBandWidth, TxIqBandWidth, totalRxBufferSize,
                                                                                     totalTxBufferSize, allocateAux, allocateDebugPort);
                 }
                 catch (System.Exception ex)
                 {
-                    this.rumaClient = Tiger.Ruma.RumaControlClientFactory.CreateDefault();
+                    rumaClient = Tiger.Ruma.RumaControlClientFactory.CreateDefault();
                 }
-                this.rCpriDataFlow = this.rumaClient.CpriDataFlow;
-                this.rCarrierConfig = this.rumaClient.CarrierConfig;
-                this.rCpriConfig = this.rumaClient.CpriConfig;
-                this.rServerBase = this.rumaClient.PlatformUtilities;
-                this.rTriggerConfig = this.rumaClient.TriggerConfig;
-                this.rRULoader = this.rumaClient.OoM.RULoader;
-                this.rDebugPortConfig = this.rumaClient.DebugPortConfig;
+                rCpriDataFlow = rumaClient.CpriDataFlow;
+                rCarrierConfig = rumaClient.CarrierConfig;
+                rCpriConfig = rumaClient.CpriConfig;
+                rServerBase = rumaClient.PlatformUtilities;
+                rTriggerConfig = rumaClient.TriggerConfig;
+                rRULoader = rumaClient.OoM.RULoader;
+                rDebugPortConfig = rumaClient.DebugPortConfig;
             }
             catch (System.Exception e)
             {
-                WriteTraceText(error,"StartPlayBack" + e.Message);
                 error.Errordescription = "startTCA error : " + e.Message;
                 return false;
             }
@@ -378,6 +360,52 @@ namespace ConnectProxy.TCALoader
                 WriteTraceText(error, "Rumaster Get Carrier Config  error : " + e.Message);
             }
             return getdata;
+        }
+        /// <summary>
+        /// static function for the external mode call
+        /// </summary>
+        /// <param name="error"></param>
+        /// <param name="cpriport"></param>
+        /// <param name="comPort"></param>
+        /// <param name="radioType"></param>
+        /// <param name="hpVee"></param>
+        /// <param name="baudRate"></param>
+        /// <param name="echo"></param>
+        public static int CreateComport(RunTimeError error, string cpriport, string comPort = "COM10",string radioType= "RUS", bool hpVee= true, int baudRate= 115200, int echo= 1)
+        {
+            try
+            {
+                return rumaClient.OoM.Tpf.CreateCOMPort((int)cpriPortMapping[cpriport], 0, comPort, hpVee, baudRate, echo);
+            }
+            catch (Exception e)
+            {
+                error.Errordescription = "Create the serial port error : " + e.Message;
+            }
+            return 0;
+        }
+        public static void DestroyCOMPort(RunTimeError error, int objectID)
+        {
+            try
+            {
+                rumaClient.OoM.Tpf.DestroyCOMPort(objectID);
+            }
+            catch (Exception e)
+            {
+                error.Errordescription = "Create the serial port error : " + e.Message;
+            }
+        }
+        public static string[] getTCATPFComports(RunTimeError error)
+        {
+            string[] list = new string[] { };
+            try
+            {
+                return rumaClient.OoM.Tpf.CNC_GetPortNames();
+            }
+            catch (Exception e)
+            {
+                error.Errordescription = "Create the serial port error : " + e.Message;
+            }
+            return list;
         }
         public void SetCarrierConfig(RunTimeError error, string cpriport, string flowdirection, string carriernumber, string enabled, string carrierid, string technology, string frequency, string axccontainer, string gain, string fsinfo, string axcContainerGroupLength, string bfPeriod, string syncmode)
         {
@@ -732,13 +760,13 @@ namespace ConnectProxy.TCALoader
         #endregion
 
         // data member
-        public Tiger.Ruma.IRumaCpriDataFlow rCpriDataFlow;
-        public Tiger.Ruma.IRumaCarrierConfig rCarrierConfig;
-        public Tiger.Ruma.IRumaCpriConfig rCpriConfig;
-        public Tiger.Ruma.IRumaServerBase rServerBase;
-        public Tiger.Ruma.IRumaTriggerConfig rTriggerConfig;
-        public Tiger.Ruma.IRULoader rRULoader;
-        public Tiger.Ruma.IRumaDebugPortConfig rDebugPortConfig;
+        public static Tiger.Ruma.IRumaCpriDataFlow rCpriDataFlow;
+        public static Tiger.Ruma.IRumaCarrierConfig rCarrierConfig;
+        public static Tiger.Ruma.IRumaCpriConfig rCpriConfig;
+        public static Tiger.Ruma.IRumaServerBase rServerBase;
+        public static Tiger.Ruma.IRumaTriggerConfig rTriggerConfig;
+        public static Tiger.Ruma.IRULoader rRULoader;
+        public static Tiger.Ruma.IRumaDebugPortConfig rDebugPortConfig;
 
         #region TypeDict
         public static readonly Dictionary<string, CpriFlowDirection> flowDirectionDic = new Dictionary<string, CpriFlowDirection>
@@ -945,15 +973,23 @@ namespace ConnectProxy.TCALoader
                                                                                     { "6A", 80 }, { "6B",80},
                                                                                     { "7A", 80 }, { "7B",80},
                                                                                     { "8A", 80 }, { "8B",80}};
-        uint totalRxBufferSize = 2016;
-        uint totalTxBufferSize = 512;
-        bool allocateAux = true;
-        bool allocateDebugPort = true;
+        static uint totalRxBufferSize = 2016;
+        static uint totalTxBufferSize = 512;
+        static bool allocateAux = true;
+        static bool allocateDebugPort = true;
         #endregion
-        private IRumaControlClient rumaClient;
-        private ApplicationControl tas;
-        private TslControlClient tsl;
-        private Dictionary<string, ulong> cpriPortMapping = new Dictionary<string, ulong>();
-        
-    }
-}
+        public static IRumaControlClient rumaClient;
+        private static ApplicationControl tas;
+        private static TslControlClient tsl;
+        public static Dictionary<string, ulong> cpriPortMapping = new Dictionary<string, ulong> {
+            { "1A", 0 }, { "1B", 1 }, { "2A", 2 }, { "2B", 3 } , { "3A", 4 },
+            {"3B", 5}, {"4A", 6}, {"4B", 7},  {"5A", 8} ,{"6A", 10} ,{"6B", 11},
+            {"7A", 12},{"7B", 13},{"8A", 14},{"8B", 15}   };
+                                                                                                                                                        
+    }                                                                                                                                                   
+}                                                                                                                                                       
+                                                                                                                                                        
+                                                                                                                                                        
+                                                                                                  
+                                                                                                  
+                                                                                                 

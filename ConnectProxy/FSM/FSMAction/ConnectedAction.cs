@@ -20,6 +20,7 @@ namespace ConnectProxy.FSM.FSMAction
             connectedfSMData = fSMData;
             connectedRequestHandleAction.Add("RuCommand", tryEnterRuCommandsMode);
             connectedRequestHandleAction.Add("CT11Commands", tryEnterCT11Mode);
+            connectedRequestHandleAction.Add("TCAIcolish", tryTCAIcolish);
             connectedRequestHandleAction.Add("help", connectedRequestPrintHelp);
 
         }
@@ -34,6 +35,10 @@ namespace ConnectProxy.FSM.FSMAction
         private void tryEnterCT11Mode(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
             this.connectedfSMData.elevator.Fire(Events.CT11Command);
+        }
+        private void tryTCAIcolish(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
+        {
+            this.connectedfSMData.elevator.Fire(Events.TCAIcolishCommand);
         }
         private void tryEnterRuCommandsMode(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
@@ -79,7 +84,8 @@ namespace ConnectProxy.FSM.FSMAction
         }
         public void runAction(TelnetAppSession AppSession, StringRequestInfo stringRequestInfo)
         {
-            
+
+
             if (stringRequestInfo.Key.Length == 0)
             {
                 AppSession.sendPropmt();

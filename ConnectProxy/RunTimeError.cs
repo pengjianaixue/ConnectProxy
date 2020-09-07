@@ -13,7 +13,7 @@ namespace ConnectProxy
             get ;
             set ;
         }
-        public bool IsError => this.Errordescription.Length != 0;
+        public bool IsError => (Errordescription !=null) && (this.Errordescription.Length != 0);
 
     }
 }

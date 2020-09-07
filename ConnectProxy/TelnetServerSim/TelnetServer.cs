@@ -132,6 +132,11 @@ namespace ConnectProxy.TelnetServerSim
         {
 
             #region async
+            if (requestInfo.Key.Length != 0)
+            {
+                LogHelper.WriteLog(string.Format("client:{1} send requset msg: [{0}]", requestInfo.Key + (requestInfo.Parameters.Length == 0 ? " " : string.Join(" ", requestInfo.Parameters))
+                , session.LocalEndPoint.Address.MapToIPv4()));
+            }
             Task.Run(() =>
             {
                 if (sessionDic.ContainsKey(session.SessionID))
